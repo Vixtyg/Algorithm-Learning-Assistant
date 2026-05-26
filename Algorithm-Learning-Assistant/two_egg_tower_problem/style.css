@@ -1,0 +1,401 @@
+@import url('https://fonts.googleapis.com/css2?family=Finlandica+Headline:ital,wght@0,100..900;1,100..900&family=Karla:ital,wght@0,200..800;1,200..800&display=swap');
+
+:root {
+    --text: #d8ddf5;
+    --background: #04060e;
+    --primary: #8c9ce1;
+    --secondary: #892477;
+    --tertiary: #0e142b;
+    --accent: #ce466f;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+    margin-top: 10px;
+    max-height: 70%;
+    height: 70%;
+}
+
+::-webkit-scrollbar-track {
+    max-height: 70%;
+    height: 70%;
+}
+
+::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 1px;
+    border-radius: 10px;
+    background: rgba(8, 109, 159, 0.8);
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0);
+    height: 40%;
+}
+#bottom-half{
+    opacity: 0;
+    animation: slide-right 1s forwards;
+}
+#simulation-container {
+    margin-top: 80;
+    opacity: 0;
+    animation: slide-right 1s forwards 0.5s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#house-display {
+    width: 20vw;
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-right: 10vw;
+    padding-left: 10vw;
+    background-color: var(--tertiary);
+    border-radius: 30px;
+    scrollbar-width: 10px;
+}
+
+#floor-container {
+    display: flex;
+    flex-direction: column;
+    padding-right: 10px;
+    height: 90%;
+    width: 30vw;
+    gap: 1px;
+
+    overflow-y: scroll;
+}
+
+#floor:hover {
+    background-color: purple !important;
+    transition: background-color 0.2s linear !important;
+}
+
+#floor {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    box-sizing: border-box;
+    border-radius: 5px;
+    background-color: var(--primary);
+
+    font-family: "Finlandica Headline";
+}
+#floor-static {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    box-sizing: border-box;
+    border-radius: 5px;
+    background-color: var(--primary);
+
+    font-family: "Finlandica Headline";
+}
+
+
+#floor-chosen {
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    box-sizing: border-box;
+    border-radius: 5px;
+    background-color: var(--secondary);
+    font-family: "Finlandica Headline";
+}
+
+#floor-chosen-deadly {
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    border-radius: 5px;
+    background-color: var(--accent);
+    font-family: "Finlandica Headline";
+    animation: shake 0.2s;
+}
+
+#text-container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#title-heading {
+    text-align: center;
+    opacity: 0;
+    animation: slide-right 1s forwards ease-out;
+}
+
+#title-description {
+    text-align: center;
+    font-weight: 400;
+    width: 40vw;
+}
+
+#h4-text1 {
+    width: 40vw;
+    opacity: 0;
+    animation: slide-left 1s forwards ease-out;
+}
+
+#h4-text2 {
+    width: 40vw;
+    opacity: 0;
+    animation: slide-right 1s forwards ease-out;
+}
+
+#h4-text3 {
+    width: 40vw;
+    opacity: 0;
+    animation: slide-left 1s forwards ease-out;
+}
+
+#h4-text4 {
+    width: 40vw;
+    opacity: 0;
+    animation: slide-right 1s forwards ease-out;
+}
+
+#h4-text5 {
+    width: 40vw;
+    opacity: 0;
+    animation: slide-left 1s forwards ease-out;
+}
+
+#house-navbar {
+    display: flex;
+    width: 120%;
+    justify-content: space-between;
+}
+#vertical-navbar {
+    display: flex;
+    flex-direction: column;
+    height: 500px;
+    width: 2em;
+    gap: 50px;
+}
+#restart-icon {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M18.258 3.508a.75.75 0 0 1 .463.693v4.243a.75.75 0 0 1-.75.75h-4.243a.75.75 0 0 1-.53-1.28L14.8 6.31a7.25 7.25 0 1 0 4.393 5.783a.75.75 0 0 1 1.488-.187A8.75 8.75 0 1 1 15.93 5.18l1.51-1.51a.75.75 0 0 1 .817-.162'/%3E%3C/svg%3E");
+    background-color: currentColor;
+    -webkit-mask-image: var(--svg);
+    mask-image: var(--svg);
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    color: white;
+}
+#result-div-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#result-div{
+    width: 40vw;
+    margin-bottom: 30px;
+}
+#hint1 {
+    display: inline-block;
+    width: 2em;
+    height: 2em;
+    --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M9 20h6v2H9zm-.83-4.95c.41.62.62 1.36.72 1.95H8v2h8v-2h-.89c.11-.59.31-1.33.72-1.95c.36-.54.76-1.01 1.14-1.46c1-1.18 2.03-2.39 2.03-4.6c0-3.86-3.14-7-7-7s-7 3.14-7 7c0 2.21 1.03 3.42 2.02 4.58c.39.45.78.92 1.15 1.47ZM12 4c2.76 0 5 2.24 5 5c0 1.47-.62 2.2-1.55 3.3c-.4.47-.85 1-1.28 1.64c-.68 1.03-.97 2.23-1.09 3.06h-2.17c-.12-.83-.4-2.03-1.08-3.05c-.43-.65-.89-1.19-1.29-1.66C7.61 11.2 7 10.48 7 9c0-2.76 2.24-5 5-5'/%3E%3C/svg%3E");
+    background-color: var(--primary);
+    -webkit-mask-image: var(--svg);
+    mask-image: var(--svg);
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+}
+#hint-text {
+    font-size: 12px;
+}
+#hint-text-small {
+    font-size: 12px;
+}
+#input-bar-error{
+    opacity: 0;
+    text-align: center;
+    margin-top: 10px;
+    color: var(--accent);
+    margin-bottom: 10px;
+    transition: opacity 1s;
+}
+#ready{
+  display: inline-block;
+  width: 2em;
+  height: 2em;
+  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='black' d='m13 24l-9-9l1.414-1.414L13 21.171L26.586 7.586L28 9z'/%3E%3C/svg%3E");
+  background-color: var(--primary);
+  -webkit-mask-image: var(--svg);
+  mask-image: var(--svg);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+
+}
+#resize-floors{
+    width: 100%;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+}
+.icon-container{
+    background-color: var(--tertiary);
+    width: 2em;
+    height: 2em;
+    border: 2px solid var(--primary);
+    overflow: hidden;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+    animation-fill-mode: forwards;
+
+    transition: width 0.2s, height 0.2s;
+}
+.icon-container:hover{
+    background-color: yellow;
+    width: 200px;
+    height: 200px;
+    transition: width 0.2s, height 0.2s;
+}
+.icon-container-small{
+    background-color: var(--tertiary);
+    width: 2em;
+    height: 2em;
+    border: 2px solid var(--primary);
+    overflow: hidden;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+    animation-fill-mode: forwards;
+
+    transition: width 0.2s, height 0.2s;
+}
+.icon-container-small:hover{
+    background-color: yellow;
+    width: 200px;
+    height: 250px;
+    transition: width 0.2s, height 0.2s;
+}
+.icon-container-ready{
+    background-color: var(--tertiary);
+    width: 2em;
+    height: 2em;
+    border: 2px solid var(--primary);
+    overflow: hidden;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+    animation-fill-mode: forwards;
+
+    transition: width 0.2s, height 0.2s;
+}
+.icon-container-ready:hover{
+    background-color: rgb(0, 255, 106);
+    width: 150px;
+    height: 90px;
+    transition: width 0.2s, height 0.2s;
+}
+.text {
+    color: var(--text);
+}
+
+html {
+    font-family: "Finlandica Headline";
+    user-select: none;
+    background-color: var(--background);
+}
+input{
+    background-color: var(--background);
+    color: var(--accent);
+    border-radius: 5px;
+    border: 1px solid var(--secondary);
+}
+input:focus{
+    outline: none;
+}
+button{
+    background-color: var(--secondary);
+    color: var(--text);
+    border-radius: 5px;
+    border: 0px solid black;
+}
+ul {
+    list-style-position: outside;
+    display: inline;
+    text-align: justify;
+}
+
+@keyframes slide-right {
+    0% {
+        transform: translateX(-10%);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0%);
+    }
+}
+
+@keyframes slide-left {
+    0% {
+        transform: translateX(10%);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0%);
+    }
+}
+
+@keyframes shake {
+    0% {
+        transform: translateX(-5%);
+    }
+
+    25% {
+        transform: translateX(5%);
+    }
+
+    50% {
+        transform: translateX(-5%);
+    }
+
+    75% {
+        transform: translateX(5%);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0%);
+    }
+}
+@keyframes show-hint{
+    100%{
+        width: 200px;
+        height: 150px;
+    }
+}
+@keyframes hide-hint{
+    100%{
+        width: 2em;
+        height: 2em;
+    }
+}
+ @media (min-width: 600px) {
+  #house-display{
+    width: 10vw;
+  }
+  #floor-container{
+    width: 20vw;
+  }
+}
