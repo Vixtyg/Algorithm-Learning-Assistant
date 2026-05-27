@@ -10,6 +10,8 @@
   background-color: #04060e1a;
   color: #888;
   font-size: 14px;
+
+  background-attachment: fixed;
 }
 
 .light-pillar-container {
@@ -18,4 +20,6 @@
   position: absolute;
   top: 0;
   left: 0;
+
+  background-attachment: fixed;
 }
