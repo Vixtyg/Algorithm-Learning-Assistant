@@ -78,6 +78,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: 10px;
 }
 
 #header-container {
@@ -214,14 +215,14 @@ body {
 #upper-hero-contents {}
 
 #overview {
-  margin-top: 10px;
+  padding-top: 20px;
   display: flex;
   justify-content: space-around;
   flex-direction: column;
   align-items: center;
   z-index: 11;
   position: relative;
-  height: 100vh;
+  height: 102vh;
   background-color: #04060e;
 }
 

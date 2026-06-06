@@ -1,14 +1,31 @@
 import logo from './logo.svg';
-import * as React from "react";
 import './App.css';
 import LetterGlitch from './LightPillar';
-
+import React, { useState, useEffect } from "react";
 
 import { Parallax, ParallaxProvider } from 'react-scroll-parallax';
 
-function App() {
-  React.useEffect(() => {
+const loadWasm = async () =>{
+  const wasm = await import("./wasm/closest_pair.js");
+  await wasm.default();
+  return wasm;
+}
 
+
+function App() {
+  const [points, setPoints] = useState([]);
+  React.useEffect(() => {
+    const init = async () => {
+    try {
+      const wasm = await loadWasm();
+      const results = wasm.returnClosestPoints(); // Fetch the array
+      setPoints(results); // Update state with the array
+    } catch (e) {
+      console.error("Failed to load WASM:", e);
+    }
+  };
+
+  init();
     const section = document.querySelector("#overview");
     let observer = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting) {
@@ -24,7 +41,6 @@ function App() {
 
   return (
     <div className="App">
-
       <div id="navbar">
         <div id="navbar-wrap">
           <svg id="logo" width="26" height="45" viewBox="0 0 26 45" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -37,7 +53,8 @@ function App() {
                 About
               </div>
               <div id="nav-contact">
-                Contact Me!
+                Contact Me! 
+      {console.log("S"+points)}
               </div>
               <div id="nav-overview">
                 Overview
