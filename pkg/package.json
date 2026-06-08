@@ -1,0 +1,15 @@
+{
+  "name": "closest-pair",
+  "type": "module",
+  "version": "0.1.0",
+  "files": [
+    "closest_pair_bg.wasm",
+    "closest_pair.js",
+    "closest_pair.d.ts"
+  ],
+  "main": "closest_pair.js",
+  "types": "closest_pair.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}
