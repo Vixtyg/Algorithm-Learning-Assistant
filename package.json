@@ -29,10 +29,9 @@
       "react-app",
       "react-app/jest"
     ],
-
-  "globals": { 
-    "globalThis": "readonly"
-  }
+    "globals": {
+      "globalThis": "readonly"
+    }
   },
   "browserslist": {
     "production": [
