@@ -1,13 +1,43 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export function returnClosestPoints(): string[];
+export class Canvas {
+    private constructor();
+    free(): void;
+    [Symbol.dispose](): void;
+    initializeCanvas(amount: number, xsize: number, ysize: number): void;
+    returnClosestDistance(): number;
+    returnOperation(): string[];
+    returnPointsX(): string[];
+    returnPointsY(): Point[];
+}
+
+export class Point {
+    private constructor();
+    free(): void;
+    [Symbol.dispose](): void;
+}
+
+export function initializeClosestPointsX(amount: number, xSize: number, ySize: number): Point[];
+
+export function initializeClosestPointsY(amount: number, xSize: number, ySize: number): Point[];
+
+export function instantiateStruct(): Canvas;
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
 export interface InitOutput {
     readonly memory: WebAssembly.Memory;
-    readonly returnClosestPoints: () => [number, number];
+    readonly __wbg_canvas_free: (a: number, b: number) => void;
+    readonly __wbg_point_free: (a: number, b: number) => void;
+    readonly canvas_initializeCanvas: (a: number, b: number, c: number, d: number) => void;
+    readonly canvas_returnClosestDistance: (a: number) => number;
+    readonly canvas_returnOperation: (a: number) => [number, number];
+    readonly canvas_returnPointsX: (a: number) => [number, number];
+    readonly canvas_returnPointsY: (a: number) => [number, number];
+    readonly initializeClosestPointsX: (a: number, b: number, c: number) => [number, number];
+    readonly initializeClosestPointsY: (a: number, b: number, c: number) => [number, number];
+    readonly instantiateStruct: () => number;
     readonly __wbindgen_exn_store: (a: number) => void;
     readonly __externref_table_alloc: () => number;
     readonly __wbindgen_externrefs: WebAssembly.Table;

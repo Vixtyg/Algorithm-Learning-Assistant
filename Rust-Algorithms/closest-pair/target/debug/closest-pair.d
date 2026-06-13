@@ -1,1 +1,1 @@
-/home/vixtyg/Dokumente/Projects/Algorithm-Learning-Assistant/Rust-Algorithms/closest-pair/target/debug/closest-pair: /home/vixtyg/Dokumente/Projects/Algorithm-Learning-Assistant/Rust-Algorithms/closest-pair/src/main.rs
+/home/vixtyg/Dokumente/Algorithm-Learning-Assistant-main(1)/Algorithm-Learning-Assistant-main/Rust-Algorithms/closest-pair/target/debug/closest-pair: /home/vixtyg/Dokumente/Algorithm-Learning-Assistant-main(1)/Algorithm-Learning-Assistant-main/Rust-Algorithms/closest-pair/src/main.rs

@@ -336,6 +336,7 @@ body {
 }
 
 #overview-title {
+  text-align: center;
   opacity: 0;
   margin-top: 9vh;
   margin-bottom: 4vh;

@@ -2,29 +2,23 @@ import '../App.css';
 import LetterGlitch from '../LightPillar';
 import React, { useState, useEffect } from "react";
 import { Parallax, ParallaxProvider } from 'react-scroll-parallax';
-import { HashRouter as Router, Routes, Route} from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 
-const loadWasm = async () =>{
+const loadWasm = async () => {
   const wasm = await import("../wasm/closest_pair.js");
   await wasm.default();
   return wasm;
 }
-
+let isMounted = false;
 
 export function Home() {
+  const nav = useNavigate();
+  const navigate = () => {
+    nav('/closestpair')
+  }
   const [points, setPoints] = useState([]);
+  const [order, setOrder] = useState([]);
   React.useEffect(() => {
-    const init = async () => {
-    try {
-      const wasm = await loadWasm();
-      const results = wasm.returnClosestPoints(); // Fetch the array
-      setPoints(results); // Update state with the array
-    } catch (e) {
-      console.error("Failed to load WASM:", e);
-    }
-  };
-
-  init();
     const section = document.querySelector("#overview");
     let observer = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting) {
@@ -52,8 +46,7 @@ export function Home() {
                 About
               </div>
               <div id="nav-contact">
-                Contact Me! 
-      {console.log("S"+points)}
+                Contact Me!
               </div>
               <div id="nav-overview">
                 Overview
@@ -125,7 +118,7 @@ export function Home() {
               </span>
             </div>
           </div>
-          <div class="card">
+          <div class="card" onClick={navigate}>
             <div class="card-contents">
               <div class="card-text">
                 <svg id="house-icon" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
@@ -183,7 +176,7 @@ export function Home() {
               <div class="card-text">
                 <svg id="house-icon" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
                   <path d="M0 0h24v24H0z" fill="none" />
-                  <path fill="none" stroke="#d8ddf5" stroke-width="2" d="M15 5h5v10c0 1.886 0 2.828-.586 3.414S17.886 19 16 19h-1M9 5H6a2 2 0 0 0-2 2v12h5" />
+                  <path fill="none" stroke="#d8ddf5" strokeWidth="2" d="M15 5h5v10c0 1.886 0 2.828-.586 3.414S17.886 19 16 19h-1M9 5H6a2 2 0 0 0-2 2v12h5" />
                 </svg>
 
                 <div class="card-title">

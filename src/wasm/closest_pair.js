@@ -1,20 +1,133 @@
 /* @ts-self-types="./closest_pair.d.ts" */
 
-/**  
- * @returns {string[]}
+export class Canvas {
+    static __wrap(ptr) {
+        const obj = Object.create(Canvas.prototype);
+        obj.__wbg_ptr = ptr;
+        CanvasFinalization.register(obj, obj.__wbg_ptr, obj);
+        return obj;
+    }
+    __destroy_into_raw() {
+        const ptr = this.__wbg_ptr;
+        this.__wbg_ptr = 0;
+        CanvasFinalization.unregister(this);
+        return ptr;
+    }
+    free() {
+        const ptr = this.__destroy_into_raw();
+        wasm.__wbg_canvas_free(ptr, 0);
+    }
+    /**
+     * @param {number} amount
+     * @param {number} xsize
+     * @param {number} ysize
+     */
+    initializeCanvas(amount, xsize, ysize) {
+        wasm.canvas_initializeCanvas(this.__wbg_ptr, amount, xsize, ysize);
+    }
+    /**
+     * @returns {number}
+     */
+    returnClosestDistance() {
+        const ret = wasm.canvas_returnClosestDistance(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * @returns {string[]}
+     */
+    returnOperation() {
+        const ret = wasm.canvas_returnOperation(this.__wbg_ptr);
+        var v1 = getArrayJsValueFromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+        return v1;
+    }
+    /**
+     * @returns {string[]}
+     */
+    returnPointsX() {
+        const ret = wasm.canvas_returnPointsX(this.__wbg_ptr);
+        var v1 = getArrayJsValueFromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+        return v1;
+    }
+    /**
+     * @returns {Point[]}
+     */
+    returnPointsY() {
+        const ret = wasm.canvas_returnPointsY(this.__wbg_ptr);
+        var v1 = getArrayJsValueFromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+        return v1;
+    }
+}
+if (Symbol.dispose) Canvas.prototype[Symbol.dispose] = Canvas.prototype.free;
+
+export class Point {
+    static __wrap(ptr) {
+        const obj = Object.create(Point.prototype);
+        obj.__wbg_ptr = ptr;
+        PointFinalization.register(obj, obj.__wbg_ptr, obj);
+        return obj;
+    }
+    __destroy_into_raw() {
+        const ptr = this.__wbg_ptr;
+        this.__wbg_ptr = 0;
+        PointFinalization.unregister(this);
+        return ptr;
+    }
+    free() {
+        const ptr = this.__destroy_into_raw();
+        wasm.__wbg_point_free(ptr, 0);
+    }
+}
+if (Symbol.dispose) Point.prototype[Symbol.dispose] = Point.prototype.free;
+
+/**
+ * @param {number} amount
+ * @param {number} xSize
+ * @param {number} ySize
+ * @returns {Point[]}
  */
-export function returnClosestPoints() {
-    const ret = wasm.returnClosestPoints();
+export function initializeClosestPointsX(amount, xSize, ySize) {
+    const ret = wasm.initializeClosestPointsX(amount, xSize, ySize);
     var v1 = getArrayJsValueFromWasm0(ret[0], ret[1]).slice();
     wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
     return v1;
 }
+
+/**
+ * @param {number} amount
+ * @param {number} xSize
+ * @param {number} ySize
+ * @returns {Point[]}
+ */
+export function initializeClosestPointsY(amount, xSize, ySize) {
+    const ret = wasm.initializeClosestPointsY(amount, xSize, ySize);
+    var v1 = getArrayJsValueFromWasm0(ret[0], ret[1]).slice();
+    wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+    return v1;
+}
+
+/**
+ * @returns {Canvas}
+ */
+export function instantiateStruct() {
+    const ret = wasm.instantiateStruct();
+    return Canvas.__wrap(ret);
+}
 function __wbg_get_imports() {
     const import0 = {
         __proto__: null,
+        __wbg___wbindgen_throw_1506f2235d1bdba0: function(arg0, arg1) {
+            throw new Error(getStringFromWasm0(arg0, arg1));
+        },
         __wbg_getRandomValues_76dfc69825c9c552: function() { return handleError(function (arg0, arg1) {
             globalThis.crypto.getRandomValues(getArrayU8FromWasm0(arg0, arg1));
         }, arguments); },
+        __wbg_point_new: function(arg0) {
+            const ret = Point.__wrap(arg0);
+            return ret;
+        },
         __wbindgen_cast_0000000000000001: function(arg0, arg1) {
             // Cast intrinsic for `Ref(String) -> Externref`.
             const ret = getStringFromWasm0(arg0, arg1);
@@ -35,6 +148,13 @@ function __wbg_get_imports() {
         "./closest_pair_bg.js": import0,
     };
 }
+
+const CanvasFinalization = (typeof FinalizationRegistry === 'undefined')
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry(ptr => wasm.__wbg_canvas_free(ptr, 1));
+const PointFinalization = (typeof FinalizationRegistry === 'undefined')
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry(ptr => wasm.__wbg_point_free(ptr, 1));
 
 function addToExternrefTable0(obj) {
     const idx = wasm.__externref_table_alloc();
