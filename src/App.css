@@ -350,6 +350,41 @@ body {
   margin-bottom: 4vh;
   font-size: 42px;
 }
+/*
+This section contains the css for the closest-pair
+
+*/
+#animate-button{
+  border: 0px;
+  border-radius: 10px;
+  padding: 5px;
+  background-color: var(--secondary);
+  color: var(--text);
+
+  transition: 0.2s background-color;
+}
+#animate-button:hover{
+  border: 0px;
+  border-radius: 10px;
+  padding: 5px;
+  background-color: #4f1745;
+  transition: 0.2s background-color;
+}
+.point{
+  width: 10px;
+  background-color: var(--text);
+  height: 10px;
+  border-radius: 10px;
+}
+
+.colored-point{
+  width: 10px;
+  background-color: var(--secondary);
+  height: 10px;
+  border-radius: 10px;
+  transition: 1s background-color;
+}
+
 
 @keyframes slide-right {
   100% {

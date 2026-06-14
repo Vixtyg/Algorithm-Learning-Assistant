@@ -14,10 +14,13 @@ const loadWasm = async () => {
 
 const pointerMap = new Map();
 
+let isMounted = false;
 
 export function ClosestPair() {
-  const refArray = useRef([]);
+
   let isMounted = false;
+  const [pointState, setPointState] = useState("point");
+  const refArray = useRef([]);
   const canvasRef = useRef(null);
   const nav = useNavigate();
   const navigate = () => {
@@ -38,7 +41,7 @@ export function ClosestPair() {
       isMounted = true;
 
       return () => {
-        cleanup;
+        cleanup();
       }
     };
 
@@ -50,20 +53,21 @@ export function ClosestPair() {
   })
   return (
     <div className="App" ref={canvasRef}>
-      <div key={"canvas"}>
+      <div id="canvas" key={"canvas"}>
         {
           points.map((point, index) => (
             <div
               ref={ref => {
                 pointerMap.set(`${parseStringToArray(points, 10)[index][0]}x${parseStringToArray(points, 10)[index][1]}y`, ref)
               }}
+              className={`${pointState}`}
               id={`${parseStringToArray(points, 10)[index][0]}x${parseStringToArray(points, 10)[index][1]}y`}
               key={`${parseStringToArray(points, 10)[index][0]}x${parseStringToArray(points, 10)[index][1]}y`} style={{
                 position: "absolute",
                 left: `${parseStringToArray(points, 10)[index][0]}px`,
                 top: `${400 - parseStringToArray(points, 10)[index][1]}px`
               }}>{
-                point
+
               }</div>
           ))
         }
@@ -79,105 +83,146 @@ export function ClosestPair() {
               parseOrder(order)
             }
           </div>
+          <div>
+            <button id="animate-button" onClick={() => scanPoints(order)}>
+              Animate this bitch!
+            </button>
+          </div>
         </div>
       </div>
     </div >
 
   );
 }
+function scanPoints(param) {
+  let orderOfOperation = parseOrder(param);
+  let element = 0;
+  let index = 1;
+  for (let iter = 0; iter < orderOfOperation.length; iter++) {
+    setTimeout(function () {
+      let element = orderOfOperation[iter]
+      let firstLetter = element[0][0][0]
+      switch (firstLetter) {
+        case ("n"):
+          pointerMap.get(element[1]).setAttribute("class", "colored-point")
 
-function parseStringToArray(inputString, elements) {
-  let containerArray = [];
-  let firstParantheses = 1;
+          pointerMap.get(element[2]).setAttribute("class", "colored-point")
+          break;
+        case ("d"):
+          break
+        case ("l"):
+          break
+      }
+    }, iter * 900)
 
-  let i = 0;
-  for (i = 0; i < elements; i++) {
-    let arrayCell = [];
-    let cellX = []
-    let cellY = []
-    while (inputString[i][firstParantheses] != ',') {
-      cellX += inputString[i][firstParantheses];
+    console.log(pointerMap.get(orderOfOperation[0][0]))
+  }
+} 
+  function parseStringToArray(inputString, elements) {
+    let containerArray = [];
+    let firstParantheses = 1;
+
+    let i = 0;
+    for (i = 0; i < elements; i++) {
+      let arrayCell = [];
+      let cellX = []
+      let cellY = []
+      while (inputString[i][firstParantheses] != ',') {
+        cellX += inputString[i][firstParantheses];
+        firstParantheses++;
+
+      }
       firstParantheses++;
+      while (inputString[i][firstParantheses] != ')') {
+        cellY += inputString[i][firstParantheses];
+        firstParantheses++;
+      }
+      if (cellX[0] != undefined) {
+        arrayCell[0] = cellX;
+        arrayCell[1] = cellY;
+        if (arrayCell[0] != []) {
+          containerArray.push(arrayCell);
+        }
+      }
+      cellX = []
+      cellY = []
+      firstParantheses = 1;
 
     }
-    firstParantheses++;
-    while (inputString[i][firstParantheses] != ')') {
-      cellY += inputString[i][firstParantheses];
-      firstParantheses++;
-    }
-    if (cellX[0] != undefined) {
-      arrayCell[0] = cellX;
-      arrayCell[1] = cellY;
-      if (arrayCell[0] != []) {
-        containerArray.push(arrayCell);
+    return containerArray
+  }
+
+  function parseOrder(order) {
+    let element = 0;
+    let cellX = [];
+    let cellY = [];
+    let keyOne = "";
+    let keyTwo = "";
+    //Note: According to our format, points start after  chars, e.g
+    //n: (x,y) has 3 chars between x and n, so i will start late.
+    let i = 4;
+    let newOrder = [];
+    let cellAll = [];
+    let operation = [[], [], []]
+    for (element of order) {
+      switch (element[0]) {
+        case ("n"):
+          operation = [[], [], []]
+          cellX = [];
+          cellY = [];
+          keyOne = "";
+          keyTwo = "";
+          //Note: According to our format, points start after  chars, e.g
+          //n: (x,y) has 3 chars between x and n, so i will start late.
+
+          operation[0] = "n"
+
+          i = 4;
+          while (element[i] != "," && element[i] != "(") {
+            cellX += element[i]
+            i++;
+          }
+          i++;
+          while (element[i] != "," && element[i] != ")") {
+            cellY += element[i]
+            i++;
+          }
+          keyOne = `${cellX}x${cellY.replace(" ", "")}y`
+
+          cellX = [];
+          cellY = [];
+          operation[1] = (keyOne)
+          i++;
+          i++;
+          i++;
+          i++;
+          while (element[i] != ",") {
+            cellX += element[i]
+            i++;
+          }
+          i++;
+          while (element[i] != "," && element[i] != ")" && element[i] != "(") {
+            cellY += element[i]
+            i++;
+          }
+          keyTwo = `${cellX}x${cellY.replace(" ", "")}y`
+          operation[2] = (keyTwo)
+
+          cellAll.push(operation)
+          break;
+        case ("d"):
+
+          console.log(cellAll)
+
+          break;
+        case ("S"):
+          break;
       }
     }
-    cellX = []
-    cellY = []
-    firstParantheses = 1;
-
+    return cellAll
   }
-  return containerArray
-}
-
-function parseOrder(order) {
-  let element = 0;
-  let cellX = [];
-  let cellY = [];
-  let keyOne = "";
-  let keyTwo = "";
-  //Note: According to our format, points start after  chars, e.g
-  //n: (x,y) has 3 chars between x and n, so i will start late.
-  let i = 4;
-  let newOrder = [];
-  let cellAll = []
-  for (element of order) {
-    switch (element[0]) {
-      case ("n"):
-        cellX = [];
-        cellY = [];
-        keyOne = "";
-        keyTwo = "";
-        //Note: According to our format, points start after  chars, e.g
-        //n: (x,y) has 3 chars between x and n, so i will start late.
-        i = 4;
-        while (element[i] != "," && element[i] != "(") {
-          cellX += element[i]
-          i++;
-        }
-        i++;
-        while (element[i] != "," && element[i] != ")") {
-          cellY += element[i]
-          i++;
-        }
-        keyOne = `${cellX}x${cellY.replace(" ", "")}y`
-        cellAll.push(keyOne)
-        console.log(cellAll)
-      case ("d"):
-        cellX = [];
-        cellY = [];
-        keyOne = "";
-        keyTwo = "";
-        //Note: According to our format, points start after  chars, e.g
-        //n: (x,y) has 3 chars between x and n, so i will start late.
-        i = 4;
-        while (element[i] != "," && element[i] != "(") {
-          cellX += element[i]
-          i++;
-        }
-        i++;
-        while (element[i] != "," && element[i] != ")") {
-          cellY += element[i]
-          i++;
-        }
-        keyOne = `${cellX}x${cellY.replace(" ", "")}y`
-        cellAll.push(keyOne)
-        console.log(cellAll)
-      case ("S"):
-        break;
-    }
+  function timeout(delay) {
+    return
   }
-  return cellAll
-}
 //Idea: Loop through items, each item is one operation,
 //match / switch case against first letters

@@ -28,13 +28,6 @@ struct Canvas {
 
 type coordinateVector = Vec<Point>;
 
-trait CanvasBehavior {
-    fn initializeCanvas(&mut self, size: u32, xsize: u32, ysize: u32);
-    fn returnPointsX(&self) -> &Vec<Point>;
-    fn returnPointsY(&self) -> &Vec<Point>;
-    fn returnOperation(&self) -> &Vec<String>;
-    fn returnClosestDistance(&self) -> &u32;
-}
 
 #[wasm_bindgen]
 impl Canvas {
@@ -51,7 +44,7 @@ impl Canvas {
         self.closestDistance = closestDistance;
     }
     #[wasm_bindgen]
-    pub fn  (&self) -> Vec<String> {
+    pub fn  returnPointsX(&self) -> Vec<String> {
         let points = self.pointsSortedByX.clone();
         points
             .into_iter()
@@ -74,8 +67,8 @@ impl Canvas {
 
 fn main() {
     let mut instance = instantiateStruct();
-    instance.initializeCanvas(4, 500, 500);
-    println!("{:#?}", instance.returnPointsX());
+    instance.initializeCanvas(10, 500, 500);
+    println!("{:#?}", instance.returnOperation());
 }
 
 #[wasm_bindgen]
@@ -194,11 +187,13 @@ fn closestPair(
             coordinateVector[0].closestDistance = Some(distAToB);
             coordinateVector[1].closestDistance = Some(distAToB);
             let message = format!(
-                "n: ({},{}), ({},{}).",
+                "N: ({}, {}), ({},{}), ({},{}). ",
                 &coordinateVector[0].x,
                 &coordinateVector[0].y,
                 &coordinateVector[1].x,
-                &coordinateVector[1].y
+                &coordinateVector[1].y,
+                &coordinateVector[2].x,
+                &coordinateVector[2].y
             );
             orderCollector.push(message);
             return coordinateVector[0].closestDistance;
@@ -208,9 +203,11 @@ fn closestPair(
             coordinateVector[2].closestDistance = Some(distAToC);
 
             let message = format!(
-                "n: ({},{}), ({},{}).",
+                "N: ({}, {}), ({},{}), ({},{}). ",
                 &coordinateVector[0].x,
                 &coordinateVector[0].y,
+                &coordinateVector[1].x,
+                &coordinateVector[1].y,
                 &coordinateVector[2].x,
                 &coordinateVector[2].y
             );
@@ -222,7 +219,9 @@ fn closestPair(
             coordinateVector[2].closestDistance = Some(distBToC);
 
             let message = format!(
-                "n: ({}, {}), ({},{}). ",
+                "N: ({}, {}), ({},{}), ({},{}). ",
+                &coordinateVector[0].x,
+                &coordinateVector[0].y,
                 &coordinateVector[1].x,
                 &coordinateVector[1].y,
                 &coordinateVector[2].x,
@@ -232,7 +231,7 @@ fn closestPair(
             return coordinateVector[1].closestDistance;
         }
     }
-    let lengthOfVec = coordinateVector.len() / 2;
+    let lengthOfVec = (coordinateVector.len() / 2);
     let (leftHalf, rightHalf) = &mut coordinateVector.split_at_mut(lengthOfVec);
     let midPoint = leftHalf[leftHalf.len() - 1].x as u32;
     let shortestLeft = closestPair(leftHalf, coordinateVectorY, midPoint, orderCollector);
@@ -274,9 +273,7 @@ fn closestMidPair(
         for j in (lowerBound..upperBound) {
             let pointQ = &middleStrip[j];
             println!("POINT Q {pointQ:?}");
-            let message = format!(
-                "d: ({},{}), ({},{}). [{}]",
-                pointP.x, pointP.y, pointQ.x, pointQ.y, cutOffLine
+            let message = format!(""
             );
             if ((((pointP.x as i32 - cutOffLine as i32).abs() as u32) < shortestDist) == false) {
                 panic!();

@@ -9,9 +9,9 @@ const loadWasm = async () => {
   await wasm.default();
   return wasm;
 }
-let isMounted = false;
 
 export function Home() {
+  let isMounted=false;
   const nav = useNavigate();
   const navigate = () => {
     nav('/closestpair')
