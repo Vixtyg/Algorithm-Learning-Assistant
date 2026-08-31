@@ -14,7 +14,10 @@ export function Home() {
   let isMounted=false;
   const nav = useNavigate();
   const navigate = () => {
-    nav('/closestpair')
+    nav('/closestpair');
+  }
+  const navigateToHeap = () => {
+    nav('/heaps');
   }
   const [points, setPoints] = useState([]);
   const [order, setOrder] = useState([]);
@@ -143,7 +146,7 @@ export function Home() {
               </span>
             </div>
           </div>
-          <div class="card">
+          <div class="card" onClick={navigateToHeap}>
             <div class="card-contents">
               <div class="card-text">
                 <svg id="house-icon" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">

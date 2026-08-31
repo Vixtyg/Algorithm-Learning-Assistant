@@ -5,6 +5,7 @@ import React, { useState, useEffect } from "react";
 import { Parallax, ParallaxProvider } from 'react-scroll-parallax';
 import { Home } from './react-pages/home.jsx';
 import { ClosestPair } from './react-pages/closest-pair.jsx';
+import { Heaps } from './react-pages/heaps.jsx';
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 
 
@@ -16,6 +17,7 @@ function App() {
         <Route path="/closestpair" element={<ClosestPair />} />
 
         <Route path="/" element={<Home />} />
+        <Route path="/heaps" element={<Heaps />} />
       </Routes>
     </Router>
   );
