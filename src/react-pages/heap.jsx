@@ -12,12 +12,16 @@ export function Heap({heapArray, width}){
         <div className='App'>
             <div style={{
                 width: width+'px',
-                background: 'red'
+                background: 'red',
+                flexWrap: 'wrap',
+                display: 'flex'
             }}>  
                 {heapArray.map((item,index)=>(
                     <div className='node' style={{
-                        position: 'relative',
-                        left: '50px'
+                        background: 'purple',
+                        display: 'flex',
+                        flexDirection: 'row',
+                        width: '50px',
                     }}>{item}</div>
                 ))}
             </div>
