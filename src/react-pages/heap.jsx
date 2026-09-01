@@ -9,13 +9,12 @@ import { cleanup } from '@testing-library/react';
 
 export function Heap({ heapArray, width, max_nodes_bottom }) {
     const MAX_AMOUNT_OF_NODES = max_nodes_bottom;
-    const DIAMETER_OF_NODE = Math.ceil(width / MAX_AMOUNT_OF_NODES);
-    const RADIUS_OF_NODE = Math.ceil(DIAMETER_OF_NODE / 2);
+    const DIAMETER_OF_NODE = (width / MAX_AMOUNT_OF_NODES);
+    const RADIUS_OF_NODE = (DIAMETER_OF_NODE / 2);
     return (
         <div className='App'>
             <div style={{
                 width: width + 10 + 'px',
-                background: 'red',
                 flexWrap: 'wrap',
                 display: 'flex'
             }}>
@@ -23,7 +22,8 @@ export function Heap({ heapArray, width, max_nodes_bottom }) {
                     // Math.log(2)
                     return (
 
-                        <div className='node' style={{
+                        <div className='node node-visible' style={{
+                        
                             marginLeft: calculate_margin(width, index, RADIUS_OF_NODE, max_nodes_bottom) + 'px',
                             marginRight: calculate_margin(width, index, RADIUS_OF_NODE, max_nodes_bottom) + 'px',
                             marginBottom: '20px',
@@ -31,6 +31,7 @@ export function Heap({ heapArray, width, max_nodes_bottom }) {
                             display: 'flex',
                             flexDirection: 'row',
                             width: DIAMETER_OF_NODE + 'px',
+                            height: DIAMETER_OF_NODE+'px'
                         }}>{item}</div>
                     )
                 }
@@ -56,9 +57,9 @@ function calculate_margin(width, index, radius, max_nodes_bottom) {
         //we have some rounding issues (due to division, pixel perfect behaviour..)
         // here so at the bottom stuff starts to get mushy...
         const INDEX_LEVEL = Math.floor(dual_logarithm(index + 1));
-        const TOTAL_MARGIN = Math.ceil(width / (Math.pow(2, INDEX_LEVEL)))
+        const TOTAL_MARGIN = (width / (Math.pow(2, INDEX_LEVEL)))
         console.log("Margin: " + (TOTAL_MARGIN / 2 - radius))
-        return Math.ceil(TOTAL_MARGIN / 2) - radius;
+        return (TOTAL_MARGIN / 2) - radius;
     }
 
 }

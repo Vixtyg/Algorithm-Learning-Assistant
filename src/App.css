@@ -426,10 +426,32 @@ This section contains the css for heaps
 #inner-heap-container{
   margin-top: 100px;
 }
+.node{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-radius: 9999px;
+  transition: opacity 1;
+  animation: homenum-revelio 0.2s;
+}
+#heap-wrapper{
+  transition: opacity 0.5s;
+}
 /*
 This section contains the animations
 
 */
+@keyframes homenum-revelio {
+  0%{
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+
+}
+
 @keyframes height-up {
   0% {
     height: 0px;
@@ -466,6 +488,7 @@ This section contains the animations
 
 @keyframes slide-right {
   100% {
+ 
     transform: translateY(0%);
     opacity: 1;
   }
