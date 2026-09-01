@@ -415,7 +415,21 @@ This section contains the css for the closest-pair
   animation: compare 1s ease-out forwards;
 }
 
+/*
+This section contains the css for heaps
 
+*/
+#heap-container{
+  display: flex;
+  justify-content: center;
+}
+#inner-heap-container{
+  margin-top: 100px;
+}
+/*
+This section contains the animations
+
+*/
 @keyframes height-up {
   0% {
     height: 0px;

@@ -15,8 +15,8 @@ import { eventWrapper } from '@testing-library/user-event/dist/utils/index.js';
 export function Heaps(){
 
     const [inputBarValue, inputBarValueSet] = useState(0);
-    const [arrayOfHeap, arraySet] = useState([1]);
-    const submitted = function (x,e) {
+    const [arrayOfHeap, arraySet] = useState([]);
+    const submitted = function (e) {
         var formValue = e.target.querySelector("#form").value;
         //This merely creates a copy lol..?
      
@@ -27,9 +27,11 @@ export function Heaps(){
     return(
         <div className='App'>
             <div id="heap-container">
+                <div id="inner-heap-container">
+                    
                 <Heap  heapArray={arrayOfHeap} width={100}/>
                 <form  onSubmit={(e) => {
-                    submitted(2,e)}}>
+                    submitted(e)}}>
                     <input onKeyDown={(e)=>{
                         if (isNaN(e.key/2)&&e.key!="Backspace"&&e.key!="Enter"){
                             e.preventDefault()
@@ -39,6 +41,8 @@ export function Heaps(){
                     }} id="form" onChange={(e)=>{}} />
                     <button type='submit'>Submit</button>
                 </form>
+
+                </div>
             </div>
             <div>
                 
