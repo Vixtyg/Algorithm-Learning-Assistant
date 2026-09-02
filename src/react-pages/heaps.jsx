@@ -19,18 +19,17 @@ export function Heaps() {
     const submitted = function (e) {
         var formValue = e.target.querySelector("#form").value;
         //This merely creates a copy lol..?
-        if (formValue!=""){
-           arraySet([...arrayOfHeap, formValue])
+        if (formValue != "") {
+            arraySet([...arrayOfHeap, formValue])
         }
-        console.log("Array " + arrayOfHeap)
         e.target.querySelector("#form").value = ""
     }
-    const emptyArray= () =>{
-        heapRef.current.style.opacity=0;
+    const emptyArray = () => {
+        heapRef.current.style.opacity = 0;
         setTimeout(() => {
             arraySet([]);
 
-        heapRef.current.style.opacity=1;
+            heapRef.current.style.opacity = 1;
         }, 500);
     }
     return (
@@ -38,16 +37,17 @@ export function Heaps() {
             <div id="heap-container">
                 <div id="inner-heap-container">
                     <div id="heap-wrapper" ref={heapRef}>
-                        <Heap  id="apparently-i-need-to-wrap-this-in-a-div-lol" heapArray={arrayOfHeap} width={250} max_nodes_bottom={8} />
+                        <Heap id="apparently-i-need-to-wrap-this-in-a-div-lol" heapArray={arrayOfHeap} width={250} max_nodes_bottom={8} />
+
                     </div>
-                    
+
                     <form onSubmit={async (e) => {
                         e.preventDefault()
                         submitted(e)
                     }}>
                         <input onKeyDown={(e) => {
                             if (isNaN(e.key / 2) && e.key != "Backspace" && e.key != "Enter"
-                            || arrayOfHeap.length>=15) {
+                                || arrayOfHeap.length >= 15) {
                                 e.preventDefault()
                             }
 

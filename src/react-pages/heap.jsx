@@ -7,10 +7,20 @@ import { HashRouter as Router, Routes, Route, useNavigate } from 'react-router-d
 import { cleanup } from '@testing-library/react';
 
 
-export function Heap({ heapArray, width, max_nodes_bottom }) {
+export function Heap({ heapArray, width, max_nodes_bottom, change_tracker }) {
+    var refsMap = new Set()
+    const refsArray = useRef(refsMap);
     const MAX_AMOUNT_OF_NODES = max_nodes_bottom;
     const DIAMETER_OF_NODE = (width / MAX_AMOUNT_OF_NODES);
     const RADIUS_OF_NODE = (DIAMETER_OF_NODE / 2);
+    React.useEffect(() => {
+        console.log(refsArray)
+        //i have NO IDEA why this works LMAO
+        //It rerenders and recreates...
+        if (heapArray.length == 0) {
+            reset_heap(refsArray)
+        }
+    }, [heapArray])
     return (
         <div className='App'>
             <div style={{
@@ -21,9 +31,11 @@ export function Heap({ heapArray, width, max_nodes_bottom }) {
                 {heapArray.map((item, index) => {
                     // Math.log(2)
                     return (
-
-                        <div className='node node-visible' style={{
-                        
+                        <div ref={ref => {
+                            if (ref != null) {
+                                refsArray.current.add(ref)
+                            }
+                        }} className='node node-visible' style={{
                             marginLeft: calculate_margin(width, index, RADIUS_OF_NODE, max_nodes_bottom) + 'px',
                             marginRight: calculate_margin(width, index, RADIUS_OF_NODE, max_nodes_bottom) + 'px',
                             marginBottom: '20px',
@@ -31,8 +43,29 @@ export function Heap({ heapArray, width, max_nodes_bottom }) {
                             display: 'flex',
                             flexDirection: 'row',
                             width: DIAMETER_OF_NODE + 'px',
-                            height: DIAMETER_OF_NODE+'px'
+                            height: DIAMETER_OF_NODE + 'px'
                         }}>{item}</div>
+
+                    )
+                }
+                )
+                }
+            </div>
+            <div>
+                {heapArray.slice(1, heapArray.length).map((item, index) => {
+                    // Math.log(2)
+                    return (
+                        <div ref={ref => {
+                            if (ref != null) {
+                                refsArray.current.add(ref)
+                            }
+                        }} style={{
+                            position: 'absolute',
+                            height: '2px',
+                            width: '2px',
+                            background: 'white',
+                        }}>{ }</div>
+
                     )
                 }
                 )
@@ -51,15 +84,22 @@ function calculate_margin(width, index, radius, max_nodes_bottom) {
     //bottom nodes must be squished together in a pixel perfect way.
     //so we handle this seperately
     if (index + 2 > max_nodes_bottom) {
-
         return 0;
     } else {
         //we have some rounding issues (due to division, pixel perfect behaviour..)
         // here so at the bottom stuff starts to get mushy...
         const INDEX_LEVEL = Math.floor(dual_logarithm(index + 1));
         const TOTAL_MARGIN = (width / (Math.pow(2, INDEX_LEVEL)))
-        console.log("Margin: " + (TOTAL_MARGIN / 2 - radius))
         return (TOTAL_MARGIN / 2) - radius;
     }
 
+}
+
+function reset_heap(refsArray) {
+    refsArray.current = new Set();
+}
+
+function connect_points(key_of_heap1, key_of_heap2) {
+    var [x1, y1, x2, y2] = (0, 0, 0, 0)
+    return ((x1, y1), (x2, y2))
 }
