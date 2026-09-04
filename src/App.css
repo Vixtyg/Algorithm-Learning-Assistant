@@ -419,14 +419,20 @@ This section contains the css for the closest-pair
 This section contains the css for heaps
 
 */
-#heap-container{
+.animated-line {
+  transition: width 0.34s 0.1s;
+}
+
+#heap-container {
   display: flex;
   justify-content: center;
 }
-#inner-heap-container{
+
+#inner-heap-container {
   margin-top: 100px;
 }
-.node{
+
+.node {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -435,17 +441,32 @@ This section contains the css for heaps
   transition: opacity 1;
   animation: homenum-revelio 0.2s;
 }
-#heap-wrapper{
+
+#heap-wrapper {
+  margin-bottom: 30px;
   transition: opacity 0.5s;
 }
+
 /*
 This section contains the animations
 
 */
+@keyframes engorgio {
+  0% {
+    width: 0%;
+  }
+
+  100% {
+    width: 100%;
+  }
+
+}
+
 @keyframes homenum-revelio {
-  0%{
+  0% {
     opacity: 0;
   }
+
   100% {
     opacity: 1;
   }
@@ -488,7 +509,7 @@ This section contains the animations
 
 @keyframes slide-right {
   100% {
- 
+
     transform: translateY(0%);
     opacity: 1;
   }
