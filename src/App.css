@@ -438,8 +438,14 @@ This section contains the css for heaps
   justify-content: center;
   text-align: center;
   border-radius: 9999px;
-  transition: opacity 1;
+  transition: transform 1s;
+  backface-visibility: hidden;
   animation: homenum-revelio 0.2s;
+}
+
+#inner {
+  transition: transform rotate ty 1s;
+  backface-visibility: hidden
 }
 
 #heap-wrapper {
@@ -471,6 +477,7 @@ This section contains the animations
     opacity: 1;
   }
 
+
 }
 
 @keyframes height-up {
@@ -496,7 +503,6 @@ This section contains the animations
   }
 
   100% {
-
     transform: translate(-60%, -50%);
     background-color: var(--secondary);
     width: 7px;

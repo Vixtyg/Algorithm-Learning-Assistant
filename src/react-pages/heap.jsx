@@ -28,7 +28,6 @@ export function Heap({ heapArray, width, max_nodes_bottom, change_tracker }) {
             reset_heap(refsNodesArray);
         }
         setStateNodesArray([...refsPointsArray.current]);
-        console.log(stateNodesArray)
     }, [heapArray]);
     React.useEffect(() => {
         if (lineArray != null) {
@@ -38,7 +37,6 @@ export function Heap({ heapArray, width, max_nodes_bottom, change_tracker }) {
             if ((lineIndex + 1) % 2 == 0) {
                 lineArray.style.width = calculate_length(calculate_coordinate(Math.floor(lineIndex / 2), refsNodesArray),
                     calculate_coordinate(lineIndex, refsNodesArray)) + 'px'
-
                 lineArray.style.transform = `rotate(${-calculate_angle(
                     calculate_coordinate(Math.floor(lineIndex / 2), refsNodesArray),
                     calculate_coordinate(lineIndex, refsNodesArray)
@@ -48,14 +46,10 @@ export function Heap({ heapArray, width, max_nodes_bottom, change_tracker }) {
                     calculate_coordinate(lineIndex, refsNodesArray)) + 'px'
                 lineArray.style.transform = `scaleX(-1) rotate(${- calculate_angle(calculate_coordinate(lineIndex / 2 - 1, refsNodesArray),
                     calculate_coordinate(lineIndex, refsNodesArray))}deg)`
-
-
             }
-
             lineArray.style.left = calculate_coordinate(lineIndex, refsNodesArray)[0] + 'px';
             lineArray.style.top = calculate_coordinate(lineIndex, refsNodesArray)[1] + 'px';
-
-
+            swap(lineIndex, [...refsNodesArray.current]);
         }
     }, [lineArray]);
     return (
@@ -89,7 +83,6 @@ export function Heap({ heapArray, width, max_nodes_bottom, change_tracker }) {
                 display: 'flex'
             }}>
                 {heapArray.map((item, index) => {
-
                     return (
                         <div key={index + item}
                             ref={ref => {
@@ -105,7 +98,7 @@ export function Heap({ heapArray, width, max_nodes_bottom, change_tracker }) {
                                 flexDirection: 'row',
                                 width: DIAMETER_OF_NODE + 'px',
                                 height: DIAMETER_OF_NODE + 'px'
-                            }}>{item}</div>
+                            }}><span id='inner'>{item}</span></div>
                     )
                 }
                 )
@@ -158,4 +151,36 @@ function calculate_length([x1, y1], [x2, y2]) {
 }
 function set_to_array(set) {
     return 2
+}
+
+function swap(index, array_of_heaps) {
+    var x1 = array_of_heaps[index].getBoundingClientRect().x;
+    var y1 = array_of_heaps[index].getBoundingClientRect().y;
+    console.log("Sifting " + array_of_heaps[index].getBoundingClientRect().y)
+    index += 1;
+    if (index % 2 == 0) {
+        var x2 = array_of_heaps[index / 2 - 1].getBoundingClientRect().x;
+        var y2 = array_of_heaps[index / 2 - 1].getBoundingClientRect().y;
+
+        array_of_heaps[index - 2].style.transformOrigin = `${array_of_heaps[index / 2].getBoundingClientRect().width / 2
+            + (x1 - x2) / 2
+            }px 
+        ${array_of_heaps[index / 2].getBoundingClientRect().width / 2
+            + (y1 - y2) / 2
+            }px`
+
+        array_of_heaps[index - 2].style.transform = `rotate(180deg)`
+        array_of_heaps[index - 2].querySelector("#inner").style.transform = `rotate(-180deg)`
+
+        array_of_heaps[index - 1].style.transformOrigin = `${array_of_heaps[index / 2].getBoundingClientRect().width / 2
+            - (x1 - x2) / 2
+            }px 
+        ${array_of_heaps[index - 1].getBoundingClientRect().width / 2
+            - (y1 - y2) / 2
+            }px`
+
+        array_of_heaps[index - 1].style.transform = `rotate(180deg)`
+    } else {
+
+    }
 }
