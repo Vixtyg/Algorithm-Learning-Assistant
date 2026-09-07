@@ -32,12 +32,19 @@ export function Heaps() {
             heapRef.current.style.opacity = 1;
         }, 500);
     }
+    const requestFullScreen = () => {
+        heapRef.current.requestFullscreen()
+    }
     return (
         <div className='App'>
             <div id="heap-container">
                 <div id="inner-heap-container">
                     <div id="heap-wrapper" ref={heapRef}>
-                        <Heap id="apparently-i-need-to-wrap-this-in-a-div-lol" heapArray={arrayOfHeap} width={250} max_nodes_bottom={8} />
+                        <Heap id="heap" heapArray={arrayOfHeap} width={Math.round(// Source - https://stackoverflow.com/a/3437825
+                            // Posted by Ankit Jaiswal, modified by community. See post 'Timeline' for change history
+                            // Retrieved 2026-09-07, License - CC BY-SA 4.0
+
+                            window.screen.width / 5)} max_nodes_bottom={8} />
 
                     </div>
 
@@ -56,6 +63,7 @@ export function Heaps() {
                         <button type='submit'>Submit</button>
                     </form>
                     <button onClick={emptyArray}>Reset</button>
+                    <button onClick={requestFullScreen}>Fullscreen</button>
                 </div>
             </div>
             <div>

@@ -420,7 +420,7 @@ This section contains the css for heaps
 
 */
 .animated-line {
-  transition: width 0.34s 0.1s;
+  transition: width 0.44s 0.1s;
 }
 
 #heap-container {
@@ -438,20 +438,29 @@ This section contains the css for heaps
   justify-content: center;
   text-align: center;
   border-radius: 9999px;
-  transition: transform 1s;
+  transition: all 1s 0.5s;
   backface-visibility: hidden;
-  animation: homenum-revelio 0.2s;
+  animation: homenum-revelio 0.7s;
+  opacity: 1;
 }
 
 #inner {
-  transition: transform rotate ty 1s;
-  backface-visibility: hidden
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-radius: 9999px;
+  transition: all 1s 0.5s;
+  backface-visibility: hidden;
+  animation: homenum-revelio 0.7s;
+  opacity: 1;
 }
 
 #heap-wrapper {
   margin-bottom: 30px;
   transition: opacity 0.5s;
 }
+
 
 /*
 This section contains the animations
@@ -474,6 +483,7 @@ This section contains the animations
   }
 
   100% {
+
     opacity: 1;
   }
 

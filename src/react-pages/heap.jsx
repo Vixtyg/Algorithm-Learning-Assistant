@@ -5,14 +5,18 @@ import { createRoot } from 'react-dom/client';
 import { Parallax, ParallaxProvider } from 'react-scroll-parallax';
 import { HashRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { cleanup } from '@testing-library/react';
-import { array, linearDepth, positionGeometry } from 'three/tsl';
+import { array, div, linearDepth, positionGeometry } from 'three/tsl';
 
 
 export function Heap({ heapArray, width, max_nodes_bottom, change_tracker }) {
-    const refsNodesArray = useRef(new Set());
+    const setOfNodes = useRef([]);
     const [stateNodesArray, setStateNodesArray] = useState([]);
+    const [latestNode, setLatestNode] = useState();
 
-    const [lineArray, setLineArray] = useState();
+    const [latestNodeWrapper, setLatestNodWrapper] = useState();
+
+    const [container, setContainer] = useState();
+    const [latestLine, setlatestLine] = useState();
     const [lineIndex, setLineIndex] = useState();
     const refsPointsArray = useRef(new Set());
 
@@ -22,38 +26,102 @@ export function Heap({ heapArray, width, max_nodes_bottom, change_tracker }) {
     React.useEffect(() => {
         //i have NO IDEA why this works LMAO
         //It rerenders and recreates...
-
         if (heapArray.length == 0) {
-            console.log(refsNodesArray.current)
-            reset_heap(refsNodesArray);
+            setStateNodesArray([])
+            reset_heap(setOfNodes);
         }
-        setStateNodesArray([...refsPointsArray.current]);
     }, [heapArray]);
     React.useEffect(() => {
-        if (lineArray != null) {
-            lineArray.style.background = 'white'
-            lineArray.style.height = '2px'
-            console.log(lineIndex)
+        if (latestNode != null && latestNodeWrapper != null) {
+            latestNode.style.top = latestNodeWrapper.getBoundingClientRect().y + 'px'
+
+            latestNode.style.left = latestNodeWrapper.getBoundingClientRect().x + 'px'
+        }
+    }, [latestNode, latestNodeWrapper]);
+    React.useEffect(() => {
+        if (latestNode != null) {
+
+            if (stateNodesArray[0] == null) {
+                setStateNodesArray([latestNode])
+
+            }
+        }
+        if (latestNode != null) {
+
+        }
+        //console.log("Latest " + stateNodesArray)
+        if (latestLine != null) {
+            latestLine.style.background = 'white'
+            latestLine.style.height = '2px'
+            //    console.log(lineIndex)
             if ((lineIndex + 1) % 2 == 0) {
-                lineArray.style.width = calculate_length(calculate_coordinate(Math.floor(lineIndex / 2), refsNodesArray),
-                    calculate_coordinate(lineIndex, refsNodesArray)) + 'px'
-                lineArray.style.transform = `rotate(${-calculate_angle(
-                    calculate_coordinate(Math.floor(lineIndex / 2), refsNodesArray),
-                    calculate_coordinate(lineIndex, refsNodesArray)
+                latestLine.style.width = calculate_length(calculate_coordinate(Math.floor(lineIndex / 2), setOfNodes),
+                    calculate_coordinate(lineIndex, setOfNodes)) + 'px'
+                latestLine.style.transform = `rotate(${-calculate_angle(
+                    calculate_coordinate(Math.floor(lineIndex / 2), setOfNodes),
+                    calculate_coordinate(lineIndex, setOfNodes)
                 )}deg)`
             } else {
-                lineArray.style.width = calculate_length(calculate_coordinate(lineIndex / 2 - 1, refsNodesArray),
-                    calculate_coordinate(lineIndex, refsNodesArray)) + 'px'
-                lineArray.style.transform = `scaleX(-1) rotate(${- calculate_angle(calculate_coordinate(lineIndex / 2 - 1, refsNodesArray),
-                    calculate_coordinate(lineIndex, refsNodesArray))}deg)`
+                latestLine.style.width = calculate_length(calculate_coordinate(lineIndex / 2 - 1, setOfNodes),
+                    calculate_coordinate(lineIndex, setOfNodes)) + 'px'
+                latestLine.style.transform = `scaleX(-1) rotate(${- calculate_angle(calculate_coordinate(lineIndex / 2 - 1, setOfNodes),
+                    calculate_coordinate(lineIndex, setOfNodes))}deg)`
             }
-            lineArray.style.left = calculate_coordinate(lineIndex, refsNodesArray)[0] + 'px';
-            lineArray.style.top = calculate_coordinate(lineIndex, refsNodesArray)[1] + 'px';
-            swap(lineIndex, [...refsNodesArray.current]);
+            latestLine.style.left = calculate_coordinate(lineIndex, setOfNodes)[0] + 'px';
+            latestLine.style.top = calculate_coordinate(lineIndex, setOfNodes)[1] + 'px';
+            setTimeout(function () {
+                swap(lineIndex, lineIndex - 1, setOfNodes.current, RADIUS_OF_NODE)
+
+            }, 900)
         }
-    }, [lineArray]);
+    }, [latestLine]);
+
+
     return (
         <div className='App'>
+
+            <div style={{
+                width: width + 10 + 'px',
+                flexWrap: 'wrap',
+                display: 'flex'
+            }}>
+                {heapArray.map((item, index) => {
+                    return (
+                        <div style={{
+
+                        }}>
+                            <div key={index + item}
+                                ref={ref => {
+                                    setLatestNodWrapper(ref)
+                                }}
+                                className='node node-visible' style={{
+                                    marginLeft: calculate_margin(width, index, RADIUS_OF_NODE, max_nodes_bottom) + 'px',
+                                    marginRight: calculate_margin(width, index, RADIUS_OF_NODE, max_nodes_bottom) + 'px',
+                                    marginBottom: '20px',
+                                    width: DIAMETER_OF_NODE + 'px',
+                                    height: DIAMETER_OF_NODE + 'px'
+                                }}><div ref={ref => {
+                                    if (ref != null) {
+                                        if (setOfNodes.current.includes(ref) == false) {
+
+                                            setOfNodes.current.push(ref)
+                                        }
+                                        setLatestNode(ref)
+                                    }
+                                }} style={{
+                                    position: 'absolute',
+                                    background: 'purple',
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    width: DIAMETER_OF_NODE + 'px',
+                                    height: DIAMETER_OF_NODE + 'px'
+                                }} id='inner'>{item}</div></div>
+                        </div>
+                    )
+                }
+                )
+                }
+            </div>
             <div>
                 {heapArray.slice(1).map((item, index) => {
                     return (
@@ -68,7 +136,7 @@ export function Heap({ heapArray, width, max_nodes_bottom, change_tracker }) {
                             if (ref != null) {
                                 refsPointsArray.current.add(ref)
                                 setLineIndex(index + 1)
-                                setLineArray(ref)
+                                setlatestLine(ref)
                             }
                         }}
                         >{ }</div>
@@ -77,34 +145,6 @@ export function Heap({ heapArray, width, max_nodes_bottom, change_tracker }) {
                 )
                 }
             </div>
-            <div style={{
-                width: width + 10 + 'px',
-                flexWrap: 'wrap',
-                display: 'flex'
-            }}>
-                {heapArray.map((item, index) => {
-                    return (
-                        <div key={index + item}
-                            ref={ref => {
-                                if (ref != null) {
-                                    refsNodesArray.current.add(ref)
-                                }
-                            }} className='node node-visible' style={{
-                                marginLeft: calculate_margin(width, index, RADIUS_OF_NODE, max_nodes_bottom) + 'px',
-                                marginRight: calculate_margin(width, index, RADIUS_OF_NODE, max_nodes_bottom) + 'px',
-                                marginBottom: '20px',
-                                background: 'purple',
-                                display: 'flex',
-                                flexDirection: 'row',
-                                width: DIAMETER_OF_NODE + 'px',
-                                height: DIAMETER_OF_NODE + 'px'
-                            }}><span id='inner'>{item}</span></div>
-                    )
-                }
-                )
-                }
-            </div>
-
         </div >
     )
 }
@@ -128,12 +168,12 @@ function calculate_margin(width, index, radius, max_nodes_bottom) {
     }
 }
 
-function reset_heap(refsNodesArray) {
-    refsNodesArray.current = new Set();
+function reset_heap(setOfNodes) {
+    setOfNodes.current = [];
 }
 
-function calculate_coordinate(index_of_heap, refsNodesArray) {
-    const array_of_heaps = [...refsNodesArray.current];
+function calculate_coordinate(index_of_heap, setOfNodes) {
+    const array_of_heaps = [...setOfNodes.current];
 
     var x1 = array_of_heaps[index_of_heap].getBoundingClientRect().x;
     var y1 = array_of_heaps[index_of_heap].getBoundingClientRect().y;
@@ -141,9 +181,6 @@ function calculate_coordinate(index_of_heap, refsNodesArray) {
     Math.round(y1) + array_of_heaps[index_of_heap].getBoundingClientRect().width / 2];
 }
 function calculate_angle([x1, y1], [x2, y2]) {
-
-    console.log("Angle " + Math.atan((y2 - y1) / (x2 - x1)))
-    console.log("Angle " + Math.atan(Math.abs((y2 - y1)) / Math.abs((x2 - x1))) * 57.29)
     return Math.atan(Math.abs((y2 - y1)) / Math.abs((x2 - x1))) * 57.29
 }
 function calculate_length([x1, y1], [x2, y2]) {
@@ -153,34 +190,28 @@ function set_to_array(set) {
     return 2
 }
 
-function swap(index, array_of_heaps) {
+function swap(index, index_parent, array_of_heaps, width) {
+
     var x1 = array_of_heaps[index].getBoundingClientRect().x;
     var y1 = array_of_heaps[index].getBoundingClientRect().y;
-    console.log("Sifting " + array_of_heaps[index].getBoundingClientRect().y)
-    index += 1;
-    if (index % 2 == 0) {
-        var x2 = array_of_heaps[index / 2 - 1].getBoundingClientRect().x;
-        var y2 = array_of_heaps[index / 2 - 1].getBoundingClientRect().y;
 
-        array_of_heaps[index - 2].style.transformOrigin = `${array_of_heaps[index / 2].getBoundingClientRect().width / 2
-            + (x1 - x2) / 2
-            }px 
-        ${array_of_heaps[index / 2].getBoundingClientRect().width / 2
-            + (y1 - y2) / 2
-            }px`
+    var x2 = array_of_heaps[index_parent].getBoundingClientRect().x;
+    var y2 = array_of_heaps[index_parent].getBoundingClientRect().y;
 
-        array_of_heaps[index - 2].style.transform = `rotate(180deg)`
-        array_of_heaps[index - 2].querySelector("#inner").style.transform = `rotate(-180deg)`
 
-        array_of_heaps[index - 1].style.transformOrigin = `${array_of_heaps[index / 2].getBoundingClientRect().width / 2
-            - (x1 - x2) / 2
-            }px 
-        ${array_of_heaps[index - 1].getBoundingClientRect().width / 2
-            - (y1 - y2) / 2
-            }px`
 
-        array_of_heaps[index - 1].style.transform = `rotate(180deg)`
-    } else {
+    array_of_heaps[index].style.top = `${y2}px`
+    array_of_heaps[index].style.left = `${x2}px`
 
-    }
+    array_of_heaps[index_parent].style.left = `${x1}px`
+    array_of_heaps[index_parent].style.top = `${y1}px`
+
+
+
+    var intermediate = array_of_heaps[index]
+    array_of_heaps[index] = array_of_heaps[index_parent]
+    array_of_heaps[index_parent] = intermediate;
+    console.log(array_of_heaps)
+
+
 }
