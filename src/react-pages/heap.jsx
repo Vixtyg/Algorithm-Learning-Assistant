@@ -14,7 +14,7 @@ export function Heap({ heapArray, width, max_nodes_bottom, change_tracker }) {
     const [latestNode, setLatestNode] = useState();
 
     const [latestNodeWrapper, setLatestNodWrapper] = useState();
-
+    const [mainWrapper, setMainWrapper] = useState();
     const [container, setContainer] = useState();
     const [latestLine, setlatestLine] = useState();
     const [lineIndex, setLineIndex] = useState();
@@ -32,12 +32,11 @@ export function Heap({ heapArray, width, max_nodes_bottom, change_tracker }) {
         }
     }, [heapArray]);
     React.useEffect(() => {
-        if (latestNode != null && latestNodeWrapper != null) {
-            latestNode.style.top = latestNodeWrapper.getBoundingClientRect().y + 'px'
-
-            latestNode.style.left = latestNodeWrapper.getBoundingClientRect().x + 'px'
+        if (latestNode != null) {
+            latestNode.style.top = latestNode.offsetTop + 'px'
+            latestNode.style.left = latestNode.offsetLeft + 'px'
         }
-    }, [latestNode, latestNodeWrapper]);
+    }, [latestNode]);
     React.useEffect(() => {
         if (latestNode != null) {
 
@@ -67,83 +66,91 @@ export function Heap({ heapArray, width, max_nodes_bottom, change_tracker }) {
                 latestLine.style.transform = `scaleX(-1) rotate(${- calculate_angle(calculate_coordinate(lineIndex / 2 - 1, setOfNodes),
                     calculate_coordinate(lineIndex, setOfNodes))}deg)`
             }
-            latestLine.style.left = calculate_coordinate(lineIndex, setOfNodes)[0] + 'px';
-            latestLine.style.top = calculate_coordinate(lineIndex, setOfNodes)[1] + 'px';
+            latestLine.style.left = calculate_coordinate(lineIndex, setOfNodes)[0] - mainWrapper.offsetLeft + 'px';
+            latestLine.style.top = calculate_coordinate(lineIndex, setOfNodes)[1] - mainWrapper.offsetTop + 'px';
             setTimeout(function () {
                 swap(lineIndex, lineIndex - 1, setOfNodes.current, RADIUS_OF_NODE)
 
-            }, 900)
+            }, 2000)
+
+
         }
     }, [latestLine]);
 
 
     return (
         <div className='App'>
+            <div id="container-heap">
 
-            <div style={{
-                width: width + 10 + 'px',
-                flexWrap: 'wrap',
-                display: 'flex'
-            }}>
-                {heapArray.map((item, index) => {
-                    return (
-                        <div style={{
+                <div ref={ref => {
+                    setMainWrapper(ref)
+                }} style={{
+                    width: width + 10 + 'px',
+                    flexWrap: 'wrap',
+                    display: 'flex',
+                    position: 'relative'
+                }}>
+                    {heapArray.map((item, index) => {
+                        return (
+                            <div style={{
+                            }}>
+                                <div key={index + item}
+                                    ref={ref => {
+                                        setLatestNodWrapper(ref)
+                                    }}
+                                    className='node node-visible' style={{
+                                        marginLeft: calculate_margin(width, index, RADIUS_OF_NODE, max_nodes_bottom) + 'px',
+                                        marginRight: calculate_margin(width, index, RADIUS_OF_NODE, max_nodes_bottom) + 'px',
+                                        marginBottom: '20px',
+                                        width: DIAMETER_OF_NODE + 'px',
+                                        height: DIAMETER_OF_NODE + 'px',
+                                        position: 'static'
+                                    }}><div ref={ref => {
+                                        if (ref != null) {
+                                            if (setOfNodes.current.includes(ref) == false) {
 
-                        }}>
-                            <div key={index + item}
-                                ref={ref => {
-                                    setLatestNodWrapper(ref)
-                                }}
-                                className='node node-visible' style={{
-                                    marginLeft: calculate_margin(width, index, RADIUS_OF_NODE, max_nodes_bottom) + 'px',
-                                    marginRight: calculate_margin(width, index, RADIUS_OF_NODE, max_nodes_bottom) + 'px',
-                                    marginBottom: '20px',
-                                    width: DIAMETER_OF_NODE + 'px',
-                                    height: DIAMETER_OF_NODE + 'px'
-                                }}><div ref={ref => {
-                                    if (ref != null) {
-                                        if (setOfNodes.current.includes(ref) == false) {
-
-                                            setOfNodes.current.push(ref)
+                                                setOfNodes.current.push(ref)
+                                            }
+                                            setLatestNode(ref)
                                         }
-                                        setLatestNode(ref)
+                                    }} style={{
+
+                                        position: 'absolute',
+                                        background: 'purple',
+                                        display: 'flex',
+                                        flexDirection: 'row',
+                                        width: DIAMETER_OF_NODE + 'px',
+                                        height: DIAMETER_OF_NODE + 'px'
+                                    }} id='inner'>{item}</div></div>
+                            </div>
+                        )
+                    }
+                    )
+                    }
+                    <div>
+                        {heapArray.slice(1).map((item, index) => {
+                            return (
+                                <div className='animated-line' style={
+                                    {
+                                        width: '0px',
+                                        zIndex: '-1',
+                                        position: 'absolute',
+                                        transformOrigin: 'top left'
                                     }
-                                }} style={{
-                                    position: 'absolute',
-                                    background: 'purple',
-                                    display: 'flex',
-                                    flexDirection: 'row',
-                                    width: DIAMETER_OF_NODE + 'px',
-                                    height: DIAMETER_OF_NODE + 'px'
-                                }} id='inner'>{item}</div></div>
-                        </div>
-                    )
-                }
-                )
-                }
-            </div>
-            <div>
-                {heapArray.slice(1).map((item, index) => {
-                    return (
-                        <div className='animated-line' style={
-                            {
-                                width: '0px',
-                                zIndex: '-1',
-                                position: 'absolute',
-                                transformOrigin: 'top left'
-                            }
-                        } ref={ref => {
-                            if (ref != null) {
-                                refsPointsArray.current.add(ref)
-                                setLineIndex(index + 1)
-                                setlatestLine(ref)
-                            }
-                        }}
-                        >{ }</div>
-                    )
-                }
-                )
-                }
+                                } ref={ref => {
+                                    if (ref != null) {
+                                        refsPointsArray.current.add(ref)
+                                        setLineIndex(index + 1)
+                                        setlatestLine(ref)
+                                    }
+                                }}
+                                >{ }</div>
+                            )
+                        }
+                        )
+                        }
+                    </div>
+                </div>
             </div>
         </div >
     )
@@ -190,7 +197,7 @@ function set_to_array(set) {
     return 2
 }
 
-function swap(index, index_parent, array_of_heaps, width) {
+function swap(index, index_parent, array_of_heaps, width, heapArray) {
 
     var x1 = array_of_heaps[index].getBoundingClientRect().x;
     var y1 = array_of_heaps[index].getBoundingClientRect().y;
@@ -198,13 +205,15 @@ function swap(index, index_parent, array_of_heaps, width) {
     var x2 = array_of_heaps[index_parent].getBoundingClientRect().x;
     var y2 = array_of_heaps[index_parent].getBoundingClientRect().y;
 
+    var dx = x2 - x1;
+    var dy = y2 - y1;
 
 
-    array_of_heaps[index].style.top = `${y2}px`
-    array_of_heaps[index].style.left = `${x2}px`
+    array_of_heaps[index].style.top = `${dy + array_of_heaps[index].offsetTop}px`
+    array_of_heaps[index].style.left = `${dx + array_of_heaps[index].offsetLeft}px`
 
-    array_of_heaps[index_parent].style.left = `${x1}px`
-    array_of_heaps[index_parent].style.top = `${y1}px`
+    array_of_heaps[index_parent].style.left = `${-dx + array_of_heaps[index_parent].offsetLeft}px`
+    array_of_heaps[index_parent].style.top = `${-dy + array_of_heaps[index_parent].offsetTop}px`
 
 
 
