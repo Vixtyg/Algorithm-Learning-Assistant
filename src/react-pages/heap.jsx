@@ -6,9 +6,12 @@ import { Parallax, ParallaxProvider } from 'react-scroll-parallax';
 import { HashRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { cleanup } from '@testing-library/react';
 import { array, div, linearDepth, positionGeometry } from 'three/tsl';
+import { Line2NodeMaterial } from 'three/webgpu';
 
 
-export function Heap({ heapArray, width, max_nodes_bottom, change_tracker }) {
+export function Heap({ heapArray, width, max_nodes_bottom, change_tracker, setHeapArray,
+    input_bar_active, form_status, input_bar
+}) {
     const setOfNodes = useRef([]);
     const [stateNodesArray, setStateNodesArray] = useState([]);
     const [latestNode, setLatestNode] = useState();
@@ -68,13 +71,14 @@ export function Heap({ heapArray, width, max_nodes_bottom, change_tracker }) {
             }
             latestLine.style.left = calculate_coordinate(lineIndex, setOfNodes)[0] - mainWrapper.offsetLeft + 'px';
             latestLine.style.top = calculate_coordinate(lineIndex, setOfNodes)[1] - mainWrapper.offsetTop + 'px';
+            sift_up(setOfNodes.current, lineIndex, input_bar)
             setTimeout(function () {
-                swap(lineIndex, lineIndex - 1, setOfNodes.current, RADIUS_OF_NODE)
+                //     swap(lineIndex, lineIndex - 1, setOfNodes.current, RADIUS_OF_NODE, setHeapArray, heapArray)
 
             }, 2000)
 
-
         }
+
     }, [latestLine]);
 
 
@@ -197,7 +201,7 @@ function set_to_array(set) {
     return 2
 }
 
-function swap(index, index_parent, array_of_heaps, width, heapArray) {
+function swap(index, index_parent, array_of_heaps, width, setHeapArray, heapArray) {
 
     var x1 = array_of_heaps[index].getBoundingClientRect().x;
     var y1 = array_of_heaps[index].getBoundingClientRect().y;
@@ -221,6 +225,69 @@ function swap(index, index_parent, array_of_heaps, width, heapArray) {
     array_of_heaps[index] = array_of_heaps[index_parent]
     array_of_heaps[index_parent] = intermediate;
     console.log(array_of_heaps)
+    // setTimeout(function () {
+    //setHeapArray([2, 1])
+    //   }, 2000)
+    //fix fullscreen
+}
+function sift_up(divArray, nodeIndex, input_bar) {
+    if ((nodeIndex + 1) % 2 == 0) {
+        var parent = (nodeIndex + 1) / 2 - 1
+
+        input_bar.disabled = true;
+        if (divArray[parent] && divArray[nodeIndex]) {
+
+            divArray[parent].style.background = "red"
+            divArray[nodeIndex].style.background = "red"
+            if (divArray[parent].innerText - divArray[nodeIndex].innerText >= 0) {
+                console.log("SWAP!")
+
+                setTimeout(function () {
+                    swap(nodeIndex, parent, divArray)
+
+                }, 500)
+
+            } else {
+
+                input_bar.disabled = false
+            }
+            setTimeout(function () {
+                divArray[parent].style.background = "purple"
+                divArray[nodeIndex].style.background = "purple"
+                setTimeout(function () {
+                    sift_up(divArray, parent, input_bar)
+                }, 1300)
+            }, 1200)
+        } else {
+
+            input_bar.disabled = false
+        }
+
+    } else {
+        var parent = (nodeIndex) / 2 - 1
+
+        input_bar.disabled = true;
+        if (divArray[parent] && divArray[nodeIndex]) {
+            divArray[parent].style.background = "red"
+            divArray[nodeIndex].style.background = "red"
+            if (divArray[parent].innerText - divArray[nodeIndex].innerText >= 0) {
+                swap(nodeIndex, parent, divArray)
+            } else {
+                input_bar.disabled = false
+            }
+            setTimeout(function () {
+                divArray[parent].style.background = "purple"
+                divArray[nodeIndex].style.background = "purple"
+
+                setTimeout(function () {
+                    sift_up(divArray, parent, input_bar)
+                }, 1300)
+            }, 1200)
+        } else {
+
+            input_bar.disabled = false
+        }
+    }
 
 
 }

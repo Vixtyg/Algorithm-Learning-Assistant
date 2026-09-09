@@ -14,8 +14,11 @@ import { eventWrapper } from '@testing-library/user-event/dist/utils/index.js';
 
 export function Heaps() {
     const heapRef = useRef();
+
+    const [inputBar, setInputBar] = useState();
     const [inputBarValue, inputBarValueSet] = useState(0);
     const [arrayOfHeap, arraySet] = useState([]);
+    const [formStatus, setFormStatus] = useState(false);
     const submitted = function (e) {
         var formValue = e.target.querySelector("#form").value;
         //This merely creates a copy lol..?
@@ -35,16 +38,23 @@ export function Heaps() {
     const requestFullScreen = () => {
         heapRef.current.requestFullscreen()
     }
+    React.useEffect(() => {
+        console.log("NEW STATUS! " + formStatus)
+        if (formStatus == false) {
+            if (inputBar != null) {
+                console.log("DISABLED!")
+                inputBar.disabled = true
+            }
+        }
+    }, [formStatus]);
     return (
         <div className='App'>
             <div id="heap-container">
                 <div id="inner-heap-container">
                     <div id="heap-wrapper" ref={heapRef}>
                         <Heap id="heap" heapArray={arrayOfHeap} width={Math.round(// Source - https://stackoverflow.com/a/3437825
-                            // Posted by Ankit Jaiswal, modified by community. See post 'Timeline' for change history
-                            // Retrieved 2026-09-07, License - CC BY-SA 4.0
-
-                            window.screen.width / 5)} max_nodes_bottom={8} />
+                            window.screen.width / 5)} max_nodes_bottom={8} setHeapArray={arraySet}
+                            input_bar_active={setFormStatus} form_status={formStatus} input_bar={inputBar} />
 
                     </div>
 
@@ -52,7 +62,9 @@ export function Heaps() {
                         e.preventDefault()
                         submitted(e)
                     }}>
-                        <input onKeyDown={(e) => {
+                        <input ref={ref => {
+                            setInputBar(ref)
+                        }} onKeyDown={(e) => {
                             if (isNaN(e.key / 2) && e.key != "Backspace" && e.key != "Enter"
                                 || arrayOfHeap.length >= 15) {
                                 e.preventDefault()
