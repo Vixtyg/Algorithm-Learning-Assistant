@@ -71,7 +71,10 @@ export function Heap({ heapArray, width, max_nodes_bottom, change_tracker, setHe
             }
             latestLine.style.left = calculate_coordinate(lineIndex, setOfNodes)[0] - mainWrapper.offsetLeft + 'px';
             latestLine.style.top = calculate_coordinate(lineIndex, setOfNodes)[1] - mainWrapper.offsetTop + 'px';
-            sift_up(setOfNodes.current, lineIndex, input_bar)
+            //sift_up(setOfNodes.current, lineIndex, input_bar)
+            if (setOfNodes.current.length>10){
+                sift_down(setOfNodes.current,0,input_bar)
+            }
             setTimeout(function () {
                 //     swap(lineIndex, lineIndex - 1, setOfNodes.current, RADIUS_OF_NODE, setHeapArray, heapArray)
 
@@ -108,7 +111,8 @@ export function Heap({ heapArray, width, max_nodes_bottom, change_tracker, setHe
                                         marginBottom: '20px',
                                         width: DIAMETER_OF_NODE + 'px',
                                         height: DIAMETER_OF_NODE + 'px',
-                                        position: 'static'
+                                        position: 'static',
+                                        fontSize: DIAMETER_OF_NODE/4+'px'
                                     }}><div ref={ref => {
                                         if (ref != null) {
                                             if (setOfNodes.current.includes(ref) == false) {
@@ -234,9 +238,9 @@ function sift_up(divArray, nodeIndex, input_bar) {
     if ((nodeIndex + 1) % 2 == 0) {
         var parent = (nodeIndex + 1) / 2 - 1
 
-        input_bar.disabled = true;
         if (divArray[parent] && divArray[nodeIndex]) {
 
+        input_bar.disabled = true;
             divArray[parent].style.background = "red"
             divArray[nodeIndex].style.background = "red"
             if (divArray[parent].innerText - divArray[nodeIndex].innerText >= 0) {
@@ -248,8 +252,11 @@ function sift_up(divArray, nodeIndex, input_bar) {
                 }, 500)
 
             } else {
-
-                input_bar.disabled = false
+        setTimeout(function () {
+               
+            input_bar.disabled = false
+            input_bar.focus()
+            }, 1200)
             }
             setTimeout(function () {
                 divArray[parent].style.background = "purple"
@@ -259,21 +266,29 @@ function sift_up(divArray, nodeIndex, input_bar) {
                 }, 1300)
             }, 1200)
         } else {
-
+     setTimeout(function () {
+               
             input_bar.disabled = false
+            input_bar.focus()
+            }, 1200)
         }
 
     } else {
         var parent = (nodeIndex) / 2 - 1
 
-        input_bar.disabled = true;
         if (divArray[parent] && divArray[nodeIndex]) {
+
+        input_bar.disabled = true;
             divArray[parent].style.background = "red"
             divArray[nodeIndex].style.background = "red"
             if (divArray[parent].innerText - divArray[nodeIndex].innerText >= 0) {
                 swap(nodeIndex, parent, divArray)
             } else {
-                input_bar.disabled = false
+                setTimeout(function () {
+               
+            input_bar.disabled = false
+            input_bar.focus()
+            }, 1200)
             }
             setTimeout(function () {
                 divArray[parent].style.background = "purple"
@@ -284,10 +299,36 @@ function sift_up(divArray, nodeIndex, input_bar) {
                 }, 1300)
             }, 1200)
         } else {
-
+ setTimeout(function () {
+               
             input_bar.disabled = false
+            input_bar.focus()
+            }, 1200)
         }
     }
-
-
+}
+function sift_down(divArray, nodeIndex, input_bar) {
+  
+    var leftChild = nodeIndex*2+1
+    var rightChild = nodeIndex*2+2
+    var maximumNodeIndex=rightChild;
+    if (leftChild==null&&rightChild!=null){
+        divArray[rightChild].style.background='red'
+        maximumNodeIndex=rightChild;
+    }else if (leftChild!=null&&rightChild==null){
+        divArray[leftChild].style.background='red'
+        maximumNodeIndex=leftChild
+    }else if (leftChild!=null&&rightChild!=null){
+        divArray[rightChild].style.background='red'
+        divArray[leftChild].style.background='red'
+        if (divArray[rightChild].innerText>divArray[leftChild].innerText){
+            maximumNodeIndex=leftChild
+        }
+    }
+    if (divArray[nodeIndex].innerText>divArray[maximumNodeIndex].innerText){
+        swap(nodeIndex, maximumNodeIndex, divArray)
+        setTimeout(function () {
+            sift_down(divArray,maximumNodeIndex,input_bar)
+            }, 1200)
+    }
 }

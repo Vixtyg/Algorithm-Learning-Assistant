@@ -37,6 +37,7 @@ export function Heaps() {
     }
     const requestFullScreen = () => {
         heapRef.current.requestFullscreen()
+
     }
     React.useEffect(() => {
         console.log("NEW STATUS! " + formStatus)
@@ -53,7 +54,7 @@ export function Heaps() {
                 <div id="inner-heap-container">
                     <div id="heap-wrapper" ref={heapRef}>
                         <Heap id="heap" heapArray={arrayOfHeap} width={Math.round(// Source - https://stackoverflow.com/a/3437825
-                            window.screen.width / 5)} max_nodes_bottom={8} setHeapArray={arraySet}
+                            window.screen.width/4)} max_nodes_bottom={8} setHeapArray={arraySet}
                             input_bar_active={setFormStatus} form_status={formStatus} input_bar={inputBar} />
 
                     </div>
