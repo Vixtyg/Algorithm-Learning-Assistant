@@ -18,7 +18,7 @@ export function Heaps() {
     const [inputBar, setInputBar] = useState();
     const [inputBarValue, inputBarValueSet] = useState(0);
     const [arrayOfHeap, arraySet] = useState([]);
-    const [formStatus, setFormStatus] = useState(false);
+    const [extractMin, setExtractMin] = useState(false);
     const submitted = function (e) {
         var formValue = e.target.querySelector("#form").value;
         //This merely creates a copy lol..?
@@ -39,23 +39,26 @@ export function Heaps() {
         heapRef.current.requestFullscreen()
 
     }
+    const popHeap = () => {
+        setExtractMin(true)
+
+    }
     React.useEffect(() => {
-        console.log("NEW STATUS! " + formStatus)
-        if (formStatus == false) {
-            if (inputBar != null) {
-                console.log("DISABLED!")
-                inputBar.disabled = true
+        if (heapRef != null) {
+            if (extractMin == true) {
+                //  heapRef.current.style.background = "red"
             }
         }
-    }, [formStatus]);
+    }, [extractMin]);
     return (
         <div className='App'>
             <div id="heap-container">
                 <div id="inner-heap-container">
                     <div id="heap-wrapper" ref={heapRef}>
                         <Heap id="heap" heapArray={arrayOfHeap} width={Math.round(// Source - https://stackoverflow.com/a/3437825
-                            window.screen.width/4)} max_nodes_bottom={8} setHeapArray={arraySet}
-                            input_bar_active={setFormStatus} form_status={formStatus} input_bar={inputBar} />
+                            window.screen.width / 4)} max_nodes_bottom={8} setHeapArray={arraySet}
+                            input_bar={inputBar}
+                            extract_min={extractMin} set_extract_min={setExtractMin} />
 
                     </div>
 
@@ -77,6 +80,7 @@ export function Heaps() {
                     </form>
                     <button onClick={emptyArray}>Reset</button>
                     <button onClick={requestFullScreen}>Fullscreen</button>
+                    <button onClick={popHeap}>Extract-Max</button>
                 </div>
             </div>
             <div>

@@ -10,7 +10,7 @@ import { Line2NodeMaterial } from 'three/webgpu';
 
 
 export function Heap({ heapArray, width, max_nodes_bottom, change_tracker, setHeapArray,
-    input_bar_active, form_status, input_bar
+    input_bar_active, form_status, input_bar, extract_min, set_extract_min
 }) {
     const setOfNodes = useRef([]);
     const [stateNodesArray, setStateNodesArray] = useState([]);
@@ -26,6 +26,7 @@ export function Heap({ heapArray, width, max_nodes_bottom, change_tracker, setHe
     const MAX_AMOUNT_OF_NODES = max_nodes_bottom;
     const DIAMETER_OF_NODE = (width / MAX_AMOUNT_OF_NODES);
     const RADIUS_OF_NODE = (DIAMETER_OF_NODE / 2);
+
     React.useEffect(() => {
         //i have NO IDEA why this works LMAO
         //It rerenders and recreates...
@@ -41,49 +42,48 @@ export function Heap({ heapArray, width, max_nodes_bottom, change_tracker, setHe
         }
     }, [latestNode]);
     React.useEffect(() => {
-        if (latestNode != null) {
 
-            if (stateNodesArray[0] == null) {
-                setStateNodesArray([latestNode])
+        setTimeout(function () {
+            //     swap(lineIndex, lineIndex - 1, setOfNodes.current, RADIUS_OF_NODE, setHeapArray, heapArray)
+            if (latestNode != null) {
+
+                if (stateNodesArray[0] == null) {
+                    setStateNodesArray([latestNode])
+
+                }
+            }
+            if (latestNode != null) {
 
             }
-        }
-        if (latestNode != null) {
-
-        }
-        //console.log("Latest " + stateNodesArray)
-        if (latestLine != null) {
-            latestLine.style.background = 'white'
-            latestLine.style.height = '2px'
-            //    console.log(lineIndex)
-            if ((lineIndex + 1) % 2 == 0) {
-                latestLine.style.width = calculate_length(calculate_coordinate(Math.floor(lineIndex / 2), setOfNodes),
-                    calculate_coordinate(lineIndex, setOfNodes)) + 'px'
-                latestLine.style.transform = `rotate(${-calculate_angle(
-                    calculate_coordinate(Math.floor(lineIndex / 2), setOfNodes),
-                    calculate_coordinate(lineIndex, setOfNodes)
-                )}deg)`
-            } else {
-                latestLine.style.width = calculate_length(calculate_coordinate(lineIndex / 2 - 1, setOfNodes),
-                    calculate_coordinate(lineIndex, setOfNodes)) + 'px'
-                latestLine.style.transform = `scaleX(-1) rotate(${- calculate_angle(calculate_coordinate(lineIndex / 2 - 1, setOfNodes),
-                    calculate_coordinate(lineIndex, setOfNodes))}deg)`
+            //console.log("Latest " + stateNodesArray)
+            if (latestLine != null) {
+                latestLine.style.background = 'white'
+                latestLine.style.height = '2px'
+                //    console.log(lineIndex)
+                if ((lineIndex + 1) % 2 == 0) {
+                    latestLine.style.width = calculate_length(calculate_coordinate(Math.floor(lineIndex / 2), setOfNodes),
+                        calculate_coordinate(lineIndex, setOfNodes)) + 'px'
+                    latestLine.style.transform = `rotate(${-calculate_angle(
+                        calculate_coordinate(Math.floor(lineIndex / 2), setOfNodes),
+                        calculate_coordinate(lineIndex, setOfNodes)
+                    )}deg)`
+                } else {
+                    latestLine.style.width = calculate_length(calculate_coordinate(lineIndex / 2 - 1, setOfNodes),
+                        calculate_coordinate(lineIndex, setOfNodes)) + 'px'
+                    latestLine.style.transform = `scaleX(-1) rotate(${- calculate_angle(calculate_coordinate(lineIndex / 2 - 1, setOfNodes),
+                        calculate_coordinate(lineIndex, setOfNodes))}deg)`
+                }
+                latestLine.style.left = calculate_coordinate(lineIndex, setOfNodes)[0] - mainWrapper.offsetLeft + 'px';
+                latestLine.style.top = calculate_coordinate(lineIndex, setOfNodes)[1] - mainWrapper.offsetTop + 'px';
+                //sift_up(setOfNodes.current, lineIndex, input_bar)
             }
-            latestLine.style.left = calculate_coordinate(lineIndex, setOfNodes)[0] - mainWrapper.offsetLeft + 'px';
-            latestLine.style.top = calculate_coordinate(lineIndex, setOfNodes)[1] - mainWrapper.offsetTop + 'px';
-            //sift_up(setOfNodes.current, lineIndex, input_bar)
-            if (setOfNodes.current.length>10){
-                sift_down(setOfNodes.current,0,input_bar)
-            }
-            setTimeout(function () {
-                //     swap(lineIndex, lineIndex - 1, setOfNodes.current, RADIUS_OF_NODE, setHeapArray, heapArray)
-
-            }, 2000)
-
-        }
-
+        }, 100)
     }, [latestLine]);
-
+    React.useEffect(() => {
+        if (extract_min == true) {
+            pop(setOfNodes.current, 0, input_bar, setHeapArray, setOfNodes, heapArray, set_extract_min);
+        }
+    }, [extract_min]);
 
     return (
         <div className='App'>
@@ -112,7 +112,7 @@ export function Heap({ heapArray, width, max_nodes_bottom, change_tracker, setHe
                                         width: DIAMETER_OF_NODE + 'px',
                                         height: DIAMETER_OF_NODE + 'px',
                                         position: 'static',
-                                        fontSize: DIAMETER_OF_NODE/4+'px'
+                                        fontSize: DIAMETER_OF_NODE / 3 + 'px'
                                     }}><div ref={ref => {
                                         if (ref != null) {
                                             if (setOfNodes.current.includes(ref) == false) {
@@ -206,7 +206,7 @@ function set_to_array(set) {
 }
 
 function swap(index, index_parent, array_of_heaps, width, setHeapArray, heapArray) {
-
+    console.log("Swap")
     var x1 = array_of_heaps[index].getBoundingClientRect().x;
     var y1 = array_of_heaps[index].getBoundingClientRect().y;
 
@@ -228,7 +228,7 @@ function swap(index, index_parent, array_of_heaps, width, setHeapArray, heapArra
     var intermediate = array_of_heaps[index]
     array_of_heaps[index] = array_of_heaps[index_parent]
     array_of_heaps[index_parent] = intermediate;
-    console.log(array_of_heaps)
+
     // setTimeout(function () {
     //setHeapArray([2, 1])
     //   }, 2000)
@@ -240,7 +240,7 @@ function sift_up(divArray, nodeIndex, input_bar) {
 
         if (divArray[parent] && divArray[nodeIndex]) {
 
-        input_bar.disabled = true;
+            input_bar.disabled = true;
             divArray[parent].style.background = "red"
             divArray[nodeIndex].style.background = "red"
             if (divArray[parent].innerText - divArray[nodeIndex].innerText >= 0) {
@@ -252,11 +252,11 @@ function sift_up(divArray, nodeIndex, input_bar) {
                 }, 500)
 
             } else {
-        setTimeout(function () {
-               
-            input_bar.disabled = false
-            input_bar.focus()
-            }, 1200)
+                setTimeout(function () {
+
+                    input_bar.disabled = false
+                    input_bar.focus()
+                }, 1200)
             }
             setTimeout(function () {
                 divArray[parent].style.background = "purple"
@@ -266,10 +266,10 @@ function sift_up(divArray, nodeIndex, input_bar) {
                 }, 1300)
             }, 1200)
         } else {
-     setTimeout(function () {
-               
-            input_bar.disabled = false
-            input_bar.focus()
+            setTimeout(function () {
+
+                input_bar.disabled = false
+                input_bar.focus()
             }, 1200)
         }
 
@@ -278,17 +278,17 @@ function sift_up(divArray, nodeIndex, input_bar) {
 
         if (divArray[parent] && divArray[nodeIndex]) {
 
-        input_bar.disabled = true;
+            input_bar.disabled = true;
             divArray[parent].style.background = "red"
             divArray[nodeIndex].style.background = "red"
             if (divArray[parent].innerText - divArray[nodeIndex].innerText >= 0) {
                 swap(nodeIndex, parent, divArray)
             } else {
                 setTimeout(function () {
-               
-            input_bar.disabled = false
-            input_bar.focus()
-            }, 1200)
+
+                    input_bar.disabled = false
+                    input_bar.focus()
+                }, 1200)
             }
             setTimeout(function () {
                 divArray[parent].style.background = "purple"
@@ -299,36 +299,79 @@ function sift_up(divArray, nodeIndex, input_bar) {
                 }, 1300)
             }, 1200)
         } else {
- setTimeout(function () {
-               
-            input_bar.disabled = false
-            input_bar.focus()
+            setTimeout(function () {
+
+                input_bar.disabled = false
+                input_bar.focus()
             }, 1200)
         }
     }
 }
-function sift_down(divArray, nodeIndex, input_bar) {
-  
-    var leftChild = nodeIndex*2+1
-    var rightChild = nodeIndex*2+2
-    var maximumNodeIndex=rightChild;
-    if (leftChild==null&&rightChild!=null){
-        divArray[rightChild].style.background='red'
-        maximumNodeIndex=rightChild;
-    }else if (leftChild!=null&&rightChild==null){
-        divArray[leftChild].style.background='red'
-        maximumNodeIndex=leftChild
-    }else if (leftChild!=null&&rightChild!=null){
-        divArray[rightChild].style.background='red'
-        divArray[leftChild].style.background='red'
-        if (divArray[rightChild].innerText>divArray[leftChild].innerText){
-            maximumNodeIndex=leftChild
+async function sleep(timeInMs) {
+    return new Promise(function (resolve, reject) {
+        setTimeout(() => {
+            resolve()
+        }, timeInMs);
+    });
+}
+async function sift_down(divArray, nodeIndex, input_bar) {
+
+    var leftChild = nodeIndex * 2 + 1
+    var rightChild = nodeIndex * 2 + 2
+    var maximumNodeIndex = rightChild;
+    if (divArray[leftChild] == null && divArray[rightChild] != null) {
+        divArray[rightChild].style.background = 'red'
+        maximumNodeIndex = rightChild;
+    } else if (divArray[leftChild] != null && divArray[rightChild] == null) {
+        divArray[leftChild].style.background = 'red'
+        maximumNodeIndex = leftChild
+    } else if (divArray[leftChild] != null && divArray[rightChild] != null) {
+        divArray[rightChild].style.background = 'red'
+        divArray[leftChild].style.background = 'red'
+        if (divArray[rightChild].innerText > divArray[leftChild].innerText) {
+            maximumNodeIndex = leftChild
         }
     }
-    if (divArray[nodeIndex].innerText>divArray[maximumNodeIndex].innerText){
-        swap(nodeIndex, maximumNodeIndex, divArray)
-        setTimeout(function () {
-            sift_down(divArray,maximumNodeIndex,input_bar)
-            }, 1200)
+    if (divArray[nodeIndex] != null && divArray[maximumNodeIndex] != null && divArray[maximumNodeIndex].innerText != null) {
+        if (Math.round(divArray[nodeIndex].innerText) > Math.round(divArray[maximumNodeIndex].innerText)) {
+            console.log("PIKA")
+            swap(nodeIndex, maximumNodeIndex, divArray)
+
+            await sleep(1600);
+            await sift_down(divArray, maximumNodeIndex, input_bar)
+        }
     }
+}
+async function pop(divArray, nodeIndex, input_bar, setHeapArray, setOfNodes, arrayHeap, setDone) {
+    console.log("STARTING")
+    var index = 0;
+    var value = Math.round(divArray[nodeIndex].innerText);
+    var i = 0;
+    var newSetOfNodes = []
+    await sift_down(divArray, nodeIndex, input_bar)
+    for (i = 0; i < setOfNodes.current.length; i++) {
+        if (Math.round(setOfNodes.current[i].innerText) == value) {
+            index = i;
+        }
+    }
+    var newArray = [];
+    for (i = 0; i < arrayHeap.length; i++) {
+        if (arrayHeap[i] == value) {
+
+        } else {
+            newArray.push(arrayHeap[i])
+        }
+    }
+    setOfNodes.current = []
+    setHeapArray(newArray)
+    console.log(setOfNodes.current)
+    for (i = 0; i < setOfNodes.current.length; i++) {
+        if (Math.round(setOfNodes.current[i].innerText) == value) {
+            index = i;
+        }
+
+        console.log(setOfNodes.current[i].innerText)
+    }
+    console.log("DONE")
+    setDone(false)
 }
