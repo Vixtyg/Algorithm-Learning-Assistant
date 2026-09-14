@@ -7,12 +7,15 @@ import { HashRouter as Router, Routes, Route, useNavigate } from 'react-router-d
 import { cleanup } from '@testing-library/react';
 import { array, div, linearDepth, positionGeometry } from 'three/tsl';
 import { Line2NodeMaterial } from 'three/webgpu';
+import { disposeShadowMaterial } from 'three/src/nodes/TSL.js';
 
 
 export function Heap({ heapArray, width, max_nodes_bottom, change_tracker, setHeapArray,
     input_bar_active, form_status, input_bar, extract_min, set_extract_min
 }) {
     const setOfNodes = useRef([]);
+
+    const arrayOfAnimatedNodes = useRef([]);
     const [stateNodesArray, setStateNodesArray] = useState([]);
     const [latestNode, setLatestNode] = useState();
 
@@ -34,11 +37,38 @@ export function Heap({ heapArray, width, max_nodes_bottom, change_tracker, setHe
             setStateNodesArray([])
             reset_heap(setOfNodes);
         }
+        console.log(setOfNodes.current)
+        if (setOfNodes.current[heapArray.length-1]!=null){
+            setOfNodes.current[heapArray.length-1].style.top = setOfNodes.current[heapArray.length-1].offsetTop + 'px'
+            setOfNodes.current[heapArray.length-1].style.left = setOfNodes.current[heapArray.length-1].offsetLeft + 'px'
+        }
+        var i=0;
+        for (i=0;i<setOfNodes.current.length;i++){
+            setOfNodes.current[i].style.top = setOfNodes.current[i].offsetTop + 'px'
+            setOfNodes.current[i].style.left = setOfNodes.current[i].offsetLeft + 'px'
+        }
+       console.log(heapArray)
     }, [heapArray]);
     React.useEffect(() => {
-        if (latestNode != null) {
-            latestNode.style.top = latestNode.offsetTop + 'px'
-            latestNode.style.left = latestNode.offsetLeft + 'px'
+        if (latestNode!=null&&arrayOfAnimatedNodes.current.includes(latestNode)==false){
+            arrayOfAnimatedNodes.current.push(latestNode)
+            console.log(setOfNodes.current[latestNode])
+            setOfNodes.current[latestNode].style.transformOrigin=`center`
+            setOfNodes.current[latestNode].animate(
+  [
+    {
+      // from
+      opacity: 0,
+      transform: 'scale(0)'
+    },
+    {
+      // to
+      opacity: 1,
+      transform: 'scale(1)'
+    },
+  ],
+  200,
+);
         }
     }, [latestNode]);
     React.useEffect(() => {
@@ -75,7 +105,7 @@ export function Heap({ heapArray, width, max_nodes_bottom, change_tracker, setHe
                 }
                 latestLine.style.left = calculate_coordinate(lineIndex, setOfNodes)[0] - mainWrapper.offsetLeft + 'px';
                 latestLine.style.top = calculate_coordinate(lineIndex, setOfNodes)[1] - mainWrapper.offsetTop + 'px';
-                //sift_up(setOfNodes.current, lineIndex, input_bar)
+                sift_up(setOfNodes,setOfNodes.current, lineIndex, input_bar,setHeapArray,heapArray)
             }
         }, 100)
     }, [latestLine]);
@@ -113,16 +143,15 @@ export function Heap({ heapArray, width, max_nodes_bottom, change_tracker, setHe
                                         height: DIAMETER_OF_NODE + 'px',
                                         position: 'static',
                                         fontSize: DIAMETER_OF_NODE / 3 + 'px'
-                                    }}><div ref={ref => {
+                                    }}><div key={item+index} ref={ref => {
                                         if (ref != null) {
                                             if (setOfNodes.current.includes(ref) == false) {
 
                                                 setOfNodes.current.push(ref)
                                             }
-                                            setLatestNode(ref)
+                                            setLatestNode(index)
                                         }
                                     }} style={{
-
                                         position: 'absolute',
                                         background: 'purple',
                                         display: 'flex',
@@ -197,6 +226,7 @@ function calculate_coordinate(index_of_heap, setOfNodes) {
 }
 function calculate_angle([x1, y1], [x2, y2]) {
     return Math.atan(Math.abs((y2 - y1)) / Math.abs((x2 - x1))) * 57.29
+    //57.29 converts radians to degrees (180/pi)
 }
 function calculate_length([x1, y1], [x2, y2]) {
     return Math.sqrt(Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2))
@@ -205,7 +235,7 @@ function set_to_array(set) {
     return 2
 }
 
-function swap(index, index_parent, array_of_heaps, width, setHeapArray, heapArray) {
+async function swap(setOfNodes,index, index_parent, array_of_heaps,  setHeapArray, heapArray) {
     console.log("Swap")
     var x1 = array_of_heaps[index].getBoundingClientRect().x;
     var y1 = array_of_heaps[index].getBoundingClientRect().y;
@@ -219,73 +249,76 @@ function swap(index, index_parent, array_of_heaps, width, setHeapArray, heapArra
 
     array_of_heaps[index].style.top = `${dy + array_of_heaps[index].offsetTop}px`
     array_of_heaps[index].style.left = `${dx + array_of_heaps[index].offsetLeft}px`
-
+   
     array_of_heaps[index_parent].style.left = `${-dx + array_of_heaps[index_parent].offsetLeft}px`
     array_of_heaps[index_parent].style.top = `${-dy + array_of_heaps[index_parent].offsetTop}px`
+  
+    var i=0
 
+    var copyOfHeapArray = heapArray.slice()
+    for (i=0;i<array_of_heaps.length;i++){
+        copyOfHeapArray[i]=array_of_heaps[i].innerText
+    }
+    var intermediate2 = (array_of_heaps[index].innerText)
+    copyOfHeapArray[index] = (array_of_heaps[index_parent].innerText)
+    copyOfHeapArray[index_parent] = intermediate2;
+    
+    setOfNodes.current=[]
 
+    console.log(copyOfHeapArray)
+    console.log(heapArray)
 
-    var intermediate = array_of_heaps[index]
-    array_of_heaps[index] = array_of_heaps[index_parent]
-    array_of_heaps[index_parent] = intermediate;
+    await sleep(2000);
+    setHeapArray(copyOfHeapArray)
 
+    await sleep(1000);
     // setTimeout(function () {
     //setHeapArray([2, 1])
     //   }, 2000)
     //fix fullscreen
 }
-function sift_up(divArray, nodeIndex, input_bar) {
+async function sift_up(setOfNodes,divArray, nodeIndex, input_bar,setHeapArray, heapArray) {
     if ((nodeIndex + 1) % 2 == 0) {
         var parent = (nodeIndex + 1) / 2 - 1
-
         if (divArray[parent] && divArray[nodeIndex]) {
-
             input_bar.disabled = true;
             divArray[parent].style.background = "red"
-            divArray[nodeIndex].style.background = "red"
+            divArray[nodeIndex].style.background = "green"
             if (divArray[parent].innerText - divArray[nodeIndex].innerText >= 0) {
-                console.log("SWAP!")
-
-                setTimeout(function () {
-                    swap(nodeIndex, parent, divArray)
-
-                }, 500)
-
+                await sleep(500);
+                await swap(setOfNodes, nodeIndex, parent, divArray,setHeapArray, heapArray)
             } else {
-                setTimeout(function () {
-
-                    input_bar.disabled = false
-                    input_bar.focus()
-                }, 1200)
-            }
-            setTimeout(function () {
-                divArray[parent].style.background = "purple"
-                divArray[nodeIndex].style.background = "purple"
-                setTimeout(function () {
-                    sift_up(divArray, parent, input_bar)
-                }, 1300)
-            }, 1200)
-        } else {
-            setTimeout(function () {
-
+                await sleep (1200);
                 input_bar.disabled = false
                 input_bar.focus()
-            }, 1200)
+            }
+           await sleep (1200);
+                divArray[parent].style.background = "purple"
+                divArray[nodeIndex].style.background = "purple"
+                await sleep (1200);
+                console.log("Parent "+parent)
+                await sift_up(setOfNodes,setOfNodes.current, parent, input_bar,setHeapArray, heapArray)           
+                console.log("Sift done")
+      } else {
+            await sleep (1200);
+            input_bar.disabled = false
+            input_bar.focus()
         }
 
     } else {
         var parent = (nodeIndex) / 2 - 1
 
         if (divArray[parent] && divArray[nodeIndex]) {
-
+   console.log("values "+divArray[parent].innerText)
+   console.log("value ", divArray[nodeIndex].innerText)
+            
             input_bar.disabled = true;
             divArray[parent].style.background = "red"
             divArray[nodeIndex].style.background = "red"
             if (divArray[parent].innerText - divArray[nodeIndex].innerText >= 0) {
-                swap(nodeIndex, parent, divArray)
+                swap(setOfNodes,nodeIndex, parent, divArray)
             } else {
                 setTimeout(function () {
-
                     input_bar.disabled = false
                     input_bar.focus()
                 }, 1200)
@@ -295,8 +328,8 @@ function sift_up(divArray, nodeIndex, input_bar) {
                 divArray[nodeIndex].style.background = "purple"
 
                 setTimeout(function () {
-                    sift_up(divArray, parent, input_bar)
-                }, 1300)
+         sift_up(setOfNodes,divArray, parent, input_bar,setHeapArray, heapArray)
+                      }, 2500)
             }, 1200)
         } else {
             setTimeout(function () {
@@ -375,3 +408,5 @@ async function pop(divArray, nodeIndex, input_bar, setHeapArray, setOfNodes, arr
     console.log("DONE")
     setDone(false)
 }
+
+//test edge cases

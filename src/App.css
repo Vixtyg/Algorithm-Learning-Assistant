@@ -440,7 +440,6 @@ This section contains the css for heaps
   border-radius: 9999px;
   transition: all 1s 0.5s;
   backface-visibility: hidden;
-  animation: homenum-revelio 0.7s;
   opacity: 1;
 }
 
@@ -452,7 +451,6 @@ This section contains the css for heaps
   border-radius: 9999px;
   transition: all 1s 0.5s;
   backface-visibility: hidden;
-  animation: homenum-revelio 0.7s;
   opacity: 1;
 }
 
@@ -472,6 +470,19 @@ This section contains the animations
   }
 
   100% {
+    width: 100%;
+  }
+
+}
+@keyframes engorgio-revelio {
+  0% {
+    opacity: 0;
+    width: 0%;
+  }
+
+  100% {
+
+    opacity: 1;
     width: 100%;
   }
 
