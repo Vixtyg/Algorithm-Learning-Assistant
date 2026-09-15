@@ -19,6 +19,8 @@ export function Heaps() {
     const [inputBarValue, inputBarValueSet] = useState(0);
     const [arrayOfHeap, arraySet] = useState([]);
     const [extractMin, setExtractMin] = useState(false);
+
+    const [heapify, setHeapify] = useState(false);
     const submitted = function (e) {
         var formValue = e.target.querySelector("#form").value;
         //This merely creates a copy lol..?
@@ -35,8 +37,8 @@ export function Heaps() {
             heapRef.current.style.opacity = 1;
         }, 500);
     }
-    const requestFullScreen = () => {
-        heapRef.current.requestFullscreen()
+    const fixHeap = () => {
+        setHeapify(true)
 
     }
     const popHeap = () => {
@@ -58,7 +60,7 @@ export function Heaps() {
                         <Heap id="heap" heapArray={arrayOfHeap} width={Math.round(// Source - https://stackoverflow.com/a/3437825
                             window.screen.width / 4)} max_nodes_bottom={8} setHeapArray={arraySet}
                             input_bar={inputBar}
-                            extract_min={extractMin} set_extract_min={setExtractMin} />
+                            extract_min={extractMin} set_extract_min={setExtractMin} heapifyStat={heapify} setHeapify={setHeapify} />
 
                     </div>
 
@@ -79,8 +81,8 @@ export function Heaps() {
                         <button type='submit'>Submit</button>
                     </form>
                     <button onClick={emptyArray}>Reset</button>
-                    <button onClick={requestFullScreen}>Fullscreen</button>
-                    <button onClick={popHeap}>Extract-Max</button>
+                    <button onClick={fixHeap}>Heapify</button>
+                    <button onClick={popHeap}>Extract-Min</button>
                 </div>
             </div>
             <div>

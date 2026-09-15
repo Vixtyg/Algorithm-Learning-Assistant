@@ -9,9 +9,11 @@ import { array, div, linearDepth, positionGeometry } from 'three/tsl';
 import { Line2NodeMaterial } from 'three/webgpu';
 import { disposeShadowMaterial } from 'three/src/nodes/TSL.js';
 
+const SPEED_IN_MS = 1000;
 
 export function Heap({ heapArray, width, max_nodes_bottom, change_tracker, setHeapArray,
-    input_bar_active, form_status, input_bar, extract_min, set_extract_min
+    input_bar_active, form_status, input_bar, extract_min, set_extract_min,
+    heapifyStat, setHeapify
 }) {
     const setOfNodes = useRef([]);
 
@@ -37,45 +39,45 @@ export function Heap({ heapArray, width, max_nodes_bottom, change_tracker, setHe
             setStateNodesArray([])
             reset_heap(setOfNodes);
         }
-        if (setOfNodes.current[heapArray.length-1]!=null){
-            setOfNodes.current[heapArray.length-1].style.top = setOfNodes.current[heapArray.length-1].offsetTop + 'px'
-            setOfNodes.current[heapArray.length-1].style.left = setOfNodes.current[heapArray.length-1].offsetLeft + 'px'
+        if (setOfNodes.current[heapArray.length - 1] != null) {
+            setOfNodes.current[heapArray.length - 1].style.top = setOfNodes.current[heapArray.length - 1].offsetTop + 'px'
+            setOfNodes.current[heapArray.length - 1].style.left = setOfNodes.current[heapArray.length - 1].offsetLeft + 'px'
         }
-        var i=0;
-        for (i=0;i<setOfNodes.current.length;i++){
+        var i = 0;
+        for (i = 0; i < setOfNodes.current.length; i++) {
             setOfNodes.current[i].style.top = setOfNodes.current[i].offsetTop + 'px'
             setOfNodes.current[i].style.left = setOfNodes.current[i].offsetLeft + 'px'
         }
     }, [heapArray]);
     React.useEffect(() => {
-        if (latestNode!=null&&arrayOfAnimatedNodes.current.includes(latestNode)==false){
+        if (latestNode != null && arrayOfAnimatedNodes.current.includes(latestNode) == false) {
             arrayOfAnimatedNodes.current.push(latestNode)
-            setOfNodes.current[latestNode].style.transformOrigin=`center`
+            setOfNodes.current[latestNode].style.transformOrigin = `center`
             setOfNodes.current[latestNode].animate(
-  [
-    {
-      // from
-      opacity: 0,
-      transform: 'scale(0)'
-    },
-    {
-      // to
-      opacity: 1,
-      transform: 'scale(1.2)'
-    }, 
-      {
-      // to
-      opacity: 1,
-      transform: 'scale(0.8)'
-    }, 
-    {
-      // to
-      opacity: 1,
-      transform: 'scale(1)'
-    },
-  ],
-  200,
-);
+                [
+                    {
+                        // from
+                        opacity: 0,
+                        transform: 'scale(0)'
+                    },
+                    {
+                        // to
+                        opacity: 1,
+                        transform: 'scale(1.2)'
+                    },
+                    {
+                        // to
+                        opacity: 1,
+                        transform: 'scale(0.8)'
+                    },
+                    {
+                        // to
+                        opacity: 1,
+                        transform: 'scale(1)'
+                    },
+                ],
+                200,
+            );
         }
     }, [latestNode]);
     React.useEffect(() => {
@@ -112,16 +114,23 @@ export function Heap({ heapArray, width, max_nodes_bottom, change_tracker, setHe
                 }
                 latestLine.style.left = calculate_coordinate(lineIndex, setOfNodes)[0] - mainWrapper.offsetLeft + 'px';
                 latestLine.style.top = calculate_coordinate(lineIndex, setOfNodes)[1] - mainWrapper.offsetTop + 'px';
-               sift_up(setOfNodes,setOfNodes.current, lineIndex, input_bar,setHeapArray,heapArray)
-               
+                //  sift_up(setOfNodes, setOfNodes.current, lineIndex, input_bar, setHeapArray, heapArray)
+
             }
         }, 100)
     }, [latestLine]);
     React.useEffect(() => {
         if (extract_min == true) {
             pop(setOfNodes.current, 0, input_bar, setHeapArray, setOfNodes, heapArray, set_extract_min);
+            //heapify(0, setOfNodes, heapArray, setHeapArray)
         }
     }, [extract_min]);
+    React.useEffect(() => {
+        if (heapifyStat == true) {
+            //pop(setOfNodes.current, 0, input_bar, setHeapArray, setOfNodes, heapArray, set_extract_min);
+            heapify(0, setOfNodes, heapArray, setHeapArray, setHeapify)
+        }
+    }, [heapifyStat]);
 
     return (
         <div className='App'>
@@ -151,7 +160,7 @@ export function Heap({ heapArray, width, max_nodes_bottom, change_tracker, setHe
                                         height: DIAMETER_OF_NODE + 'px',
                                         position: 'static',
                                         fontSize: DIAMETER_OF_NODE / 3 + 'px'
-                                    }}><div key={item+index} ref={ref => {
+                                    }}><div key={item + index} ref={ref => {
                                         if (ref != null) {
                                             if (setOfNodes.current.includes(ref) == false) {
 
@@ -243,7 +252,7 @@ function set_to_array(set) {
     return 2
 }
 
-async function swap(setOfNodes,index, index_parent, array_of_heaps,  setHeapArray, heapArray) {
+async function swap(setOfNodes, index, index_parent, array_of_heaps, setHeapArray, heapArray) {
 
     var x1 = array_of_heaps[index].getBoundingClientRect().x;
     var y1 = array_of_heaps[index].getBoundingClientRect().y;
@@ -257,62 +266,62 @@ async function swap(setOfNodes,index, index_parent, array_of_heaps,  setHeapArra
 
     array_of_heaps[index].style.top = `${dy + array_of_heaps[index].offsetTop}px`
     array_of_heaps[index].style.left = `${dx + array_of_heaps[index].offsetLeft}px`
-   
+
     array_of_heaps[index_parent].style.left = `${-dx + array_of_heaps[index_parent].offsetLeft}px`
     array_of_heaps[index_parent].style.top = `${-dy + array_of_heaps[index_parent].offsetTop}px`
-  
-    var i=0
+
+    var i = 0
 
     var copyOfHeapArray = heapArray.slice()
-    for (i=0;i<array_of_heaps.length;i++){
-        copyOfHeapArray[i]=array_of_heaps[i].innerText
+    for (i = 0; i < array_of_heaps.length; i++) {
+        copyOfHeapArray[i] = array_of_heaps[i].innerText
     }
     var intermediate2 = (array_of_heaps[index].innerText)
     copyOfHeapArray[index] = (array_of_heaps[index_parent].innerText)
     copyOfHeapArray[index_parent] = intermediate2;
-    
-    setOfNodes.current=[]
+
+    setOfNodes.current = []
 
 
-    await sleep(2000);
+    await sleep(SPEED_IN_MS);
     setHeapArray(copyOfHeapArray)
 
-    await sleep(1000);
+    await sleep(1);
     // setTimeout(function () {
     //setHeapArray([2, 1])
     //   }, 2000)
     //fix fullscreen
 }
-async function sift_up(setOfNodes,divArray, nodeIndex, input_bar,setHeapArray, heapArray) {
+async function sift_up(setOfNodes, divArray, nodeIndex, input_bar, setHeapArray, heapArray) {
     if ((nodeIndex + 1) % 2 == 0) {
         var parent = (nodeIndex + 1) / 2 - 1
-      
+
     } else {
         var parent = (nodeIndex) / 2 - 1
-    }   
-     if (divArray[parent] && divArray[nodeIndex]) {
-            input_bar.disabled = true;
-            divArray[parent].style.background = "red"
-            divArray[nodeIndex].style.background = "green"
-            if (divArray[parent].innerText - divArray[nodeIndex].innerText >= 0) {
-                await sleep(500);
-                await swap(setOfNodes, nodeIndex, parent, divArray,setHeapArray, heapArray)
-            } else {
-                await sleep (1200);
-                input_bar.disabled = false
-                input_bar.focus()
-            }
-           await sleep (1200);
-                divArray[parent].style.background = "purple"
-                divArray[nodeIndex].style.background = "purple"
-                await sleep (1200);
-                await sift_up(setOfNodes,setOfNodes.current, parent, input_bar,setHeapArray, heapArray)           
-            
-      } else {
-            await sleep (1200);
+    }
+    if (divArray[parent] && divArray[nodeIndex]) {
+        input_bar.disabled = true;
+        divArray[parent].style.background = "red"
+        divArray[nodeIndex].style.background = "red"
+        if (divArray[parent].innerText - divArray[nodeIndex].innerText >= 0) {
+            await sleep(500);
+            await swap(setOfNodes, nodeIndex, parent, divArray, setHeapArray, heapArray)
+        } else {
+            await sleep(1200);
             input_bar.disabled = false
             input_bar.focus()
         }
+        await sleep(1200);
+        divArray[parent].style.background = "purple"
+        divArray[nodeIndex].style.background = "purple"
+        await sleep(1200);
+        await sift_up(setOfNodes, setOfNodes.current, parent, input_bar, setHeapArray, heapArray)
+
+    } else {
+        await sleep(1200);
+        input_bar.disabled = false
+        input_bar.focus()
+    }
 }
 
 async function sleep(timeInMs) {
@@ -322,8 +331,8 @@ async function sleep(timeInMs) {
         }, timeInMs);
     });
 }
-async function sift_down(setOfNodes,divArray, nodeIndex, input_bar,setHeapArray,arrayHeap) {
-   
+async function sift_down(setOfNodes, divArray, nodeIndex, input_bar, setHeapArray, arrayHeap) {
+
     var leftChild = nodeIndex * 2 + 1
     var rightChild = nodeIndex * 2 + 2
     var maximumNodeIndex = rightChild;
@@ -345,11 +354,16 @@ async function sift_down(setOfNodes,divArray, nodeIndex, input_bar,setHeapArray,
     console.log(divArray[maximumNodeIndex])
     if (divArray[nodeIndex] != null && divArray[maximumNodeIndex] != null && divArray[maximumNodeIndex].innerText != null) {
         if (return_number(divArray[nodeIndex].innerText) > return_number(divArray[maximumNodeIndex].innerText)) {
-           
-            await swap(setOfNodes,nodeIndex, maximumNodeIndex, divArray,setHeapArray, arrayHeap)
 
-            await sift_down(setOfNodes, setOfNodes.current, maximumNodeIndex, input_bar,setHeapArray,arrayHeap)
+            await swap(setOfNodes, nodeIndex, maximumNodeIndex, divArray, setHeapArray, arrayHeap)
+            await sift_down(setOfNodes, setOfNodes.current, maximumNodeIndex, input_bar, setHeapArray, arrayHeap)
         }
+    }
+    if (setOfNodes.current[rightChild] != null) {
+        setOfNodes.current[rightChild].style.background = 'purple'
+    }
+    if (setOfNodes.current[leftChild] != null) {
+        setOfNodes.current[leftChild].style.background = 'purple'
     }
 }
 async function pop(divArray, nodeIndex, input_bar, setHeapArray, setOfNodes, arrayHeap, setDone) {
@@ -357,8 +371,8 @@ async function pop(divArray, nodeIndex, input_bar, setHeapArray, setOfNodes, arr
     var value = '∞';
     var i = 0;
     var newSetOfNodes = []
-    divArray[nodeIndex].innerText='∞'
-    await sift_down(setOfNodes,divArray, nodeIndex, input_bar,setHeapArray,arrayHeap)
+    divArray[nodeIndex].innerText = '∞'
+    await sift_down(setOfNodes, divArray, nodeIndex, input_bar, setHeapArray, arrayHeap)
     for (i = 0; i < setOfNodes.current.length; i++) {
         if ((setOfNodes.current[i].innerText) == value) {
             index = i;
@@ -385,11 +399,27 @@ async function pop(divArray, nodeIndex, input_bar, setHeapArray, setOfNodes, arr
     }
     setDone(false)
 }
-function return_number(value){
-    if (value=="∞"){
+function return_number(value) {
+    if (value == "∞") {
         return 99999999
-    }else{
+    } else {
         return Math.round(value)
     }
 }
 //test edge cases
+async function heapify(index, setOfNodes, heapArray, setHeapArray, setHeapify) {
+    var leftChild = 2 * index + 1
+    var rightChild = 2 * index + 2
+    var length = setOfNodes.current.length
+    if (setOfNodes.current[leftChild] != null) {
+        await heapify(leftChild, setOfNodes, heapArray, setHeapArray)
+    }
+    if (setOfNodes.current[rightChild] != null) {
+        await heapify(rightChild, setOfNodes, heapArray, setHeapArray)
+    }
+    await sift_down(setOfNodes, setOfNodes.current, index, null, setHeapArray, heapArray)
+    if (setHeapify != null) {
+
+        setHeapify(false)
+    }
+}
