@@ -126,7 +126,7 @@ export function BST({ new_entry_bst, set_new_entry_bst, max_nodes_bottom, width
         }
         if (new_entry_bst != null && new_entry_bst != "RESET" && treeRef.current.getRoot() != null) {
             treeRef.current = treeRef.current.insert(treeRef.current.getRoot(), new Node(new_entry_bst))
-            set_tree_bst(treeRef.current.getArray())
+            set_tree_bst([...treeRef.current.getArray()])
             set_dummystate(Math.random())
         console.log(treeRef.current.getArray())
         }
