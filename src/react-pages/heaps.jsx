@@ -6,6 +6,7 @@ import { Parallax, ParallaxProvider } from 'react-scroll-parallax';
 import { HashRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { cleanup } from '@testing-library/react';
 import { Heap } from './heap.jsx';
+import { BST } from './binary_search_tree.jsx';
 import { eventWrapper } from '@testing-library/user-event/dist/utils/index.js';
 
 
@@ -14,13 +15,19 @@ import { eventWrapper } from '@testing-library/user-event/dist/utils/index.js';
 
 export function Heaps() {
     const heapRef = useRef();
-
     const [inputBar, setInputBar] = useState();
     const [inputBarValue, inputBarValueSet] = useState(0);
     const [arrayOfHeap, arraySet] = useState([]);
     const [extractMin, setExtractMin] = useState(false);
-
     const [heapify, setHeapify] = useState(false);
+
+
+    const BSTRef = useRef();
+    const [inputBarBST, setInputBarBST] = useState();
+    const [inputBarValueBST, inputBarValueSetBST] = useState(0);
+    const [latestBST, setLatestBST] = useState();
+    const [rotate, setRotate] = useState(false);
+
     const submitted = function (e) {
         var formValue = e.target.querySelector("#form").value;
         //This merely creates a copy lol..?
@@ -52,6 +59,24 @@ export function Heaps() {
             }
         }
     }, [extractMin]);
+
+    const submittedBST = function (e) {
+        var formValue = e.target.querySelector("#form-BST").value;
+        //This merely creates a copy lol..?
+        if (formValue != "") {
+            setLatestBST(formValue)
+        }
+        e.target.querySelector("#form-BST").value = ""
+    }    
+    const emptyArrayBST = () => {
+        BSTRef.current.style.opacity = 0;
+        setTimeout(() => {
+            setLatestBST("RESET");
+        }, 500);
+        setTimeout(() => {
+            BSTRef.current.style.opacity = 1;
+        }, 600);
+    }
     return (
         <div className='App'>
             <div id="heap-container">
@@ -85,8 +110,37 @@ export function Heaps() {
                     <button onClick={popHeap}>Extract-Min</button>
                 </div>
             </div>
-            <div>
+            <div id="BST-container">
+                <div id="BST-inner-container">
+                    <div ref={BSTRef} >
+                        <BST id="BST" new_entry_bst={latestBST} set_new_entry_bst={setLatestBST}
+                        width={Math.round(// Source - https://stackoverflow.com/a/3437825
+                            window.screen.width / 4)} max_nodes_bottom={8} />            
+                    </div>
+                <form id="form-BST" autoComplete='off' onSubmit={async (e) => {
+                        e.preventDefault()
+                        submittedBST(e)
+                    }}>
+                        <input ref={ref => {
+                            setInputBarBST(ref)
+                        }} onKeyDown={(e) => {
+                            if (isNaN(e.key / 2) && e.key != "Backspace" && e.key != "Enter"
+                                || arrayOfHeap.length >= 15) {
+                                e.preventDefault()
+                            }
 
+
+                        }} id="form-BST" onChange={(e) => { }} />
+                        <button type='submit'>Submit</button>
+                    </form>
+                    <div>
+
+                    <button onClick={emptyArrayBST}>Reset</button>
+                    <button onClick={fixHeap}>Heapify</button>
+                    <button onClick={popHeap}>Extract-Min</button>
+                    </div>
+
+                </div>
             </div>
         </div>
     )

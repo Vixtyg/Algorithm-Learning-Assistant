@@ -458,8 +458,17 @@ This section contains the css for heaps
   margin-bottom: 30px;
   transition: opacity 0.5s;
 }
+/*
+This section contains the BST code
 
-
+*/
+#BST-container{
+  margin-top: 100px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
 /*
 This section contains the animations
 
