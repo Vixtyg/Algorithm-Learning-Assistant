@@ -5,7 +5,7 @@ import { createRoot } from 'react-dom/client';
 import { Parallax, ParallaxProvider } from 'react-scroll-parallax';
 import { HashRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { cleanup } from '@testing-library/react';
-import { array, div, linearDepth, positionGeometry } from 'three/tsl';
+import { array, div, linearDepth, normalGeometry, positionGeometry } from 'three/tsl';
 import { Line2NodeMaterial } from 'three/webgpu';
 import { disposeShadowMaterial } from 'three/src/nodes/TSL.js';
 
@@ -43,12 +43,15 @@ class BinarySearchTree {
                 newNode.x = root.x - root.container_width / 4
                 newNode.container_width = root.container_width / 2
                 newNode.depth += 1
+                newNode.parent=root
                 root.setLeft(newNode)
             } else {
 
-                newNode.x = root.x + root.container_width / 4
+                newNode.x = root.x - root.container_width / 4
                 newNode.container_width = root.container_width / 2
                 newNode.depth += 1
+
+                newNode.direction="left"
                 this.insert(root.getLeft(), newNode)
             }
         } else if ((root.getValue() < newNode.getValue())) {
@@ -59,12 +62,17 @@ class BinarySearchTree {
                 newNode.x = root.x + root.container_width / 4
                 newNode.container_width = root.container_width / 2
                 newNode.depth += 1
+
+                newNode.parent=root
+
+                newNode.direction="right"
                 root.setRight(newNode)
             } else {
 
-                newNode.x = root.x - root.container_width / 4
+                newNode.x = root.x + root.container_width / 4
                 newNode.container_width = root.container_width / 2
                 newNode.depth += 1
+                
                 this.insert(root.getRight(), newNode)
             }
         }
@@ -77,11 +85,13 @@ class BinarySearchTree {
 
 class Node {
     constructor(value) {
+        this.parent=0
         this.value = value
         this.left = null
         this.right = null
         this.x = 0
         this.container_width = 0
+        this.direction=0
         this.depth = 0
         return this
     }
@@ -95,16 +105,23 @@ class Node {
         return this.right;
     }
     getValue() {
-        return this.value;
+        return Math.round(this.value);
     }
     getLeft() {
         return this.left;
     }
-    getHeigh() {
-        return this.depth * 50
+    getHeight() {
+        return this.depth * 65
     }
     getX() {
         return this.x
+    }
+    getParent(){
+        if (this.parent!=0){
+            return this.parent
+        }else{
+            return this
+        }
     }
 }
 
@@ -121,16 +138,21 @@ export function BST({ new_entry_bst, set_new_entry_bst, max_nodes_bottom, width
     const RADIUS_OF_NODE = (DIAMETER_OF_NODE / 2);
 
     React.useEffect(() => {
+        console.log(treeRef.current.getRoot())
         if (treeRef.current.getRoot() == null) {
-            treeRef.current.setRoot(new Node(2))
+            if (new_entry_bst!=null){
+              treeRef.current.setRoot(new Node(Math.round(new_entry_bst)))
+              set_tree_bst([...treeRef.current.getArray()])
+            }
         }
-        if (new_entry_bst != null && new_entry_bst != "RESET" && treeRef.current.getRoot() != null) {
+        else if (new_entry_bst != null && new_entry_bst != "RESET" && treeRef.current.getRoot() != null) {
             treeRef.current = treeRef.current.insert(treeRef.current.getRoot(), new Node(new_entry_bst))
             set_tree_bst([...treeRef.current.getArray()])
-            set_dummystate(Math.random())
         console.log(treeRef.current.getArray())
         }
         if (new_entry_bst == "RESET") {
+
+            treeRef.current = (new BinarySearchTree(512))
             set_tree_bst([])
         }
     }, [new_entry_bst])
@@ -139,12 +161,13 @@ export function BST({ new_entry_bst, set_new_entry_bst, max_nodes_bottom, width
             position: 'relative'
         }}>
             {tree_of_BST.map((node) => {
-                return <div style={{
+                return <div>
+                    <div style={{
                     position: "static",
                     width: `${DIAMETER_OF_NODE}px`,
                     height: `${DIAMETER_OF_NODE}px`
                 }}><div id="inner" style={{
-
+                    top: `${node.getHeight()}px`,
                     left: `${node.x}px`,
                     position: 'absolute',
                     background: "purple",
@@ -160,6 +183,23 @@ export function BST({ new_entry_bst, set_new_entry_bst, max_nodes_bottom, width
                     }
                 }}>
                         {node.value}
+                    </div>
+                </div>
+                    <div
+                    style={{
+                        position: 'absolute',
+                        zIndex: '-1',
+                        top: `${node.getHeight()+RADIUS_OF_NODE}px`,
+                        left: `${node.x+RADIUS_OF_NODE}px`,
+                        transformOrigin: '0 0',
+                        transform: `rotate(-${calculate_angle([node.x,node.getHeight()],
+                            [node.getParent().x,node.getParent().getHeight()])}deg)`,
+                        background: 'white',
+                        width: `${calculate_length([node.x,node.getHeight()],
+                            [node.getParent().x,node.getParent().getHeight()])}px`,
+                        height: '2px'
+                    }}>
+
                     </div>
                 </div>
             })}
@@ -201,7 +241,12 @@ function calculate_coordinate(index_of_heap, setOfNodes) {
     return_number(y1) + array_of_heaps[index_of_heap].getBoundingClientRect().width / 2];
 }
 function calculate_angle([x1, y1], [x2, y2]) {
-    return Math.atan(Math.abs((y2 - y1)) / Math.abs((x2 - x1))) * 57.29
+    if (x2-x1>=0){
+        return Math.atan(Math.abs((y2 - y1)) / Math.abs((x2 - x1))) * 57.29
+    }else{
+        return 180-Math.atan(Math.abs((y2 - y1)) / Math.abs((x2 - x1))) * 57.29
+   
+    }
     //57.29 converts radians to degrees (180/pi)
 }
 function calculate_length([x1, y1], [x2, y2]) {
