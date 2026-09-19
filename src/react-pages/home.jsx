@@ -11,13 +11,19 @@ const loadWasm = async () => {
 }
 
 export function Home() {
-  let isMounted=false;
+  let isMounted = false;
   const nav = useNavigate();
   const navigate = () => {
     nav('/closestpair');
   }
   const navigateToHeap = () => {
     nav('/heaps');
+  }
+  const navigateToSorting = () => {
+    nav('/mergesort_quicksort');
+  }
+  const navigateToGraphs = () => {
+    nav('/graphs');
   }
   const [points, setPoints] = useState([]);
   const [order, setOrder] = useState([]);
@@ -174,7 +180,7 @@ export function Home() {
               </span>
             </div>
           </div>
-          <div class="card">
+          <div class="card" onClick={navigateToSorting}>
             <div class="card-contents">
               <div class="card-text">
                 <svg id="house-icon" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
@@ -206,7 +212,7 @@ export function Home() {
             </div>
           </div>
         </div>
-        <div id="card-bottom">
+        <div id="card-bottom" onClick={navigateToGraphs}>
           <div class="card-contents">
             <div class="card-text">
               <svg id="house-icon" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
