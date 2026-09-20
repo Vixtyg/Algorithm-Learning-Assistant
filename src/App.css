@@ -458,17 +458,64 @@ This section contains the css for heaps
   margin-bottom: 30px;
   transition: opacity 0.5s;
 }
+
 /*
 This section contains the BST code
 
 */
-#BST-container{
+#BST-container {
   margin-top: 100px;
   display: flex;
   justify-content: center;
   flex-direction: column;
   align-items: center;
 }
+
+/*
+This section is for Arrays
+
+*/
+#array-form {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#input-bars {
+  display: flex;
+  gap: 0.5em;
+  justify-content: center;
+}
+
+#submit-array-form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  height: 30px;
+  width: 100px;
+  color: var(--tertiary);
+  background-color: var(--accent);
+  border: 0;
+  border-radius: 0.5em;
+  transition: all 0.35s;
+}
+
+#submit-array-form:hover {
+  transition: all 0.35s;
+  background-color: #a23455;
+}
+
+#cell-inputbar {
+  width: 5vw;
+  background-color: var(--primary);
+  border: 0;
+  padding-left: 0.2em;
+  border-radius: 0.5em;
+}
+
 /*
 This section contains the animations
 
