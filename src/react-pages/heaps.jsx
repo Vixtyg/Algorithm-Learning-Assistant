@@ -67,7 +67,7 @@ export function Heaps() {
             setLatestBST(formValue)
         }
         e.target.querySelector("#form-BST").value = ""
-    }    
+    }
     const emptyArrayBST = () => {
         BSTRef.current.style.opacity = 0;
         setTimeout(() => {
@@ -114,10 +114,10 @@ export function Heaps() {
                 <div id="BST-inner-container">
                     <div ref={BSTRef} >
                         <BST id="BST" new_entry_bst={latestBST} set_new_entry_bst={setLatestBST}
-                        width={Math.round(// Source - https://stackoverflow.com/a/3437825
-                            window.screen.width / 4)} max_nodes_bottom={8} />            
+                            width={Math.round(// Source - https://stackoverflow.com/a/3437825
+                                window.screen.width / 4)} max_nodes_bottom={8} />
                     </div>
-                <form id="form-BST" autoComplete='off' onSubmit={async (e) => {
+                    <form id="form-BST" autoComplete='off' onSubmit={async (e) => {
                         e.preventDefault()
                         submittedBST(e)
                     }}>
@@ -135,9 +135,9 @@ export function Heaps() {
                     </form>
                     <div>
 
-                    <button onClick={emptyArrayBST}>Reset</button>
-                    <button onClick={fixHeap}>Heapify</button>
-                    <button onClick={popHeap}>Extract-Min</button>
+                        <button onClick={emptyArrayBST}>Reset</button>
+                        <button onClick={fixHeap}>Heapify</button>
+                        <button onClick={popHeap}>Extract-Min</button>
                     </div>
 
                 </div>

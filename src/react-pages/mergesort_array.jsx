@@ -17,6 +17,10 @@ export function Mergesort({ elements }) {
     const number = elements
     const input_bar_array = []
     const input_bar_ref = useRef([])
+    const array_unsorted = useRef([])
+    const array_merge_sequence = useRef([])
+    const [array_unsorted_state, set_array_unsorted_state] = useState([])
+    const [finished_render, set_finished_render] = useState(false)
     const submit_button_ref = useRef()
     const [update_counter, set_update_counter] = useState(0);
     var i
@@ -38,6 +42,7 @@ export function Mergesort({ elements }) {
         }
     }
     const check_if_full = () => {
+        console.log(input_bar_ref.current[0].value)
         var is_full = false
         var filled_containers = 0
         var index
@@ -46,27 +51,43 @@ export function Mergesort({ elements }) {
                 filled_containers += 1;
             }
             if (filled_containers == elements) {
+                console.log("unlock")
                 unlock_submit()
             } else {
-                lock_submit()
+                console.log("Lock")
             }
         }
     }
     const unlock_submit = () => {
+
         submit_button_ref.current.style.opacity = 1
-        submit_button_ref.current.disabled = false
+        submit_button_ref.current.removeAttribute('disabled')
+        console.log(submit_button_ref.current.disabled)
     }
     const lock_submit = () => {
         submit_button_ref.current.style.opacity = 0
         submit_button_ref.current.disabled = true
     }
     const create_animation_matrix = () => {
+        var i;
+        array_unsorted.current = []
+        for (i = 0; i < input_bar_ref.current.length; i++) {
+            console.log("SAD")
+            array_unsorted.current.push(Math.round(input_bar_ref.current[i].value))
+        }
+        //parent child relationship
 
+        set_array_unsorted_state(mergesortInitiate([1, 2, 3, 4, 5, 6, 7, 8, 9]))
+    }
+    const mergesortInitiate = (arr) => {
+        array_merge_sequence.current = []
+        return mergesort(arr)
     }
     const mergesort = (arr) => {
         var start = 0
         var end = arr.length
         if (arr.length == 1) {
+            console.log(arr)
             return [arr[start]]
         }
         var midpoint = Math.floor((end + start) / 2)
@@ -93,6 +114,8 @@ export function Mergesort({ elements }) {
         var i = 0;
         var j = 0;
         var k = 0;
+        //presort
+        console.log(arr1, arr2)
         while (true) {
             if (arr1[i] <= arr2[j]) {
                 merged_array.push(arr1[i])
@@ -102,23 +125,32 @@ export function Mergesort({ elements }) {
                 j += 1
             }
             if ((i) >= arr_length1) {
+
                 return merged_array = concatenate(merged_array, j, arr2)
                 break
             } else if ((j) >= arr_length2) {
+
                 return merged_array = concatenate(merged_array, i, arr1)
                 break
             }
         }
+        //postsort
     }
-
-    console.log(mergesort([5, 4, 6, 9, 10, 9, 8, 7, 6, 5, 5, 4, 3, 2, 1, 1, 1, 0, 0]
-
-    ))
+    const calculate_coordinate = (width, index) => {
+        var x
+        var y
+        var depth = Math.floor(Math.log(index + 1) / Math.log(2))
+        var spacing_gaps = width / (Math.pow(2, depth + 1))
+        var index_in_depth = ((index + 2) - Math.pow(2, depth))
+        x = (spacing_gaps) * (index_in_depth - 1) + spacing_gaps / 2
+        y = depth * 100
+        return [x, y]
+    }
     return (
         <div className='App'>
             <div id='array-form'>
                 <div id="input-bars">
-                    [{input_bar_array.map((value, index) => {
+                    [{input_bar_array.map((comma, index) => {
                         return <div id="outer-input-bar-container">
                             <div id="input-bar-container">
                                 <input onChange={check_if_full} onKeyDown={e => {
@@ -137,9 +169,12 @@ export function Mergesort({ elements }) {
                                     }
                                 }} id="cell-inputbar" type="text"
                                     ref={ref => {
-                                        input_bar_ref.current.push(ref)
+                                        if (ref != null && input_bar_ref.current.includes(ref) == false) {
+                                            input_bar_ref.current.push(ref)
+                                        }
+
                                     }} />
-                                {value}
+                                {comma}
                             </div>
                         </div>
                     })}]
@@ -147,12 +182,31 @@ export function Mergesort({ elements }) {
 
                 </div>
 
-                <button disabled="disabled" style={{
+                <button style={{
                     opacity: 0
                 }} id="submit-array-form"
-                    onSubmit={create_animation_matrix}
-                    ref={submit_button_ref}>Submit!</button>
+                    onClick={create_animation_matrix}
+                    ref={ref => {
+                        submit_button_ref.current = ref
+                        set_finished_render(true)
+                    }
+                    }>Submit!</button>
+            </div >
+            <div class="array-branch" style={{
+                position: 'absolute'
+            }}>
+                [
+                {array_unsorted_state.map((value, index) => {
+                    return <div class="array-cell"
+                        style={{
+                            //transform halfway left
+                            position: 'absolute',
+                            left: `${calculate_coordinate(500, index)[0]}px`,
+                            top: `${calculate_coordinate(500, index)[1]}px`
+                        }}>{value + input_bar_array[index]}</div>
+                })}
+                ]
             </div>
-        </div>
+        </div >
     )
 }

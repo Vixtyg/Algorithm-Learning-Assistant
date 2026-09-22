@@ -516,6 +516,11 @@ This section is for Arrays
   border-radius: 0.5em;
 }
 
+.array-branch {
+  display: flex;
+  flex-direction: row;
+}
+
 /*
 This section contains the animations
 
