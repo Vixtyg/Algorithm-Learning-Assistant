@@ -17,7 +17,7 @@ export function Sorting() {
 
     return (
         <div className='App'>
-            <Mergesort elements={10} />
+            <Mergesort elements={8} />
         </div>
     )
 }

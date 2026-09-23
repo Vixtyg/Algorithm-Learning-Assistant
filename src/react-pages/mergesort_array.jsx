@@ -19,10 +19,16 @@ export function Mergesort({ elements }) {
     const input_bar_ref = useRef([])
     const array_unsorted = useRef([])
     const array_merge_sequence = useRef([])
+
+    const array_sorted_merge_sequence = useRef([])
     const [array_unsorted_state, set_array_unsorted_state] = useState([])
+    const [array_sorted_state, set_array_sorted_state] = useState([])
     const [finished_render, set_finished_render] = useState(false)
     const submit_button_ref = useRef()
     const [update_counter, set_update_counter] = useState(0);
+
+    const [latest_array,set_latest_array] = useState()
+
     var i
     for (i = 0; i < elements; i++) {
         if (i < (elements - 1)) {
@@ -42,7 +48,7 @@ export function Mergesort({ elements }) {
         }
     }
     const check_if_full = () => {
-        console.log(input_bar_ref.current[0].value)
+        //console.log(input_bar_ref.current[0].value)
         var is_full = false
         var filled_containers = 0
         var index
@@ -59,7 +65,7 @@ export function Mergesort({ elements }) {
         }
     }
     const unlock_submit = () => {
-
+ 
         submit_button_ref.current.style.opacity = 1
         submit_button_ref.current.removeAttribute('disabled')
         console.log(submit_button_ref.current.disabled)
@@ -67,6 +73,39 @@ export function Mergesort({ elements }) {
     const lock_submit = () => {
         submit_button_ref.current.style.opacity = 0
         submit_button_ref.current.disabled = true
+    }
+    const recursive_LR_traversal = (result_arr, arr, index) => {
+        if (arr[index - 1] == null) {
+            return
+        }
+        result_arr.push(arr[index - 1])
+        recursive_LR_traversal(result_arr, arr, 2 * index)
+        recursive_LR_traversal(result_arr, arr, 2 * index + 1)
+
+    }
+    const order_of_LR_traversal = (length) => {
+        var order_of_LR_traversal = []
+        var ascending_array = []
+        var i
+        for (i = 0; i < length; i++) {
+            ascending_array.push(i)
+        }
+        recursive_LR_traversal(order_of_LR_traversal, ascending_array, 1)
+        return order_of_LR_traversal
+    }
+    const reverse_LR_order = (merge_sequence) => {
+        var copy_of_merge_sequence = merge_sequence.slice()
+        var length_of_merge_sequence = merge_sequence.length
+        var i
+        var index_of_next
+        var order_of_LR = order_of_LR_traversal(length_of_merge_sequence)
+        for (i = 0; i < length_of_merge_sequence; i++) {
+            index_of_next = order_of_LR[i]
+            console.log(index_of_next)
+            copy_of_merge_sequence[index_of_next] = (merge_sequence[i])
+        }
+
+        return copy_of_merge_sequence
     }
     const create_animation_matrix = () => {
         var i;
@@ -76,18 +115,29 @@ export function Mergesort({ elements }) {
             array_unsorted.current.push(Math.round(input_bar_ref.current[i].value))
         }
         //parent child relationship
+        console.log(array_unsorted.current)
+        mergesortInitiate(array_unsorted.current)
+        array_sorted_merge_sequence.current = reverse_LR_order(array_sorted_merge_sequence.current.reverse())
 
-        set_array_unsorted_state(mergesortInitiate([1, 2, 3, 4, 5, 6, 7, 8, 9]))
+        array_merge_sequence.current = (reverse_LR_order(array_merge_sequence.current))
+        //      console.log(array_sorted_merge_sequence.current)
+        console.log("LOG" + flip_heap_array_horizontally(array_sorted_merge_sequence.current))
+        console.log(array_sorted_merge_sequence.current)
+        set_array_unsorted_state(array_merge_sequence.current)
+        set_array_sorted_state(array_sorted_merge_sequence.current.reverse())
     }
     const mergesortInitiate = (arr) => {
         array_merge_sequence.current = []
+        array_sorted_merge_sequence.current = []
         return mergesort(arr)
     }
+
     const mergesort = (arr) => {
         var start = 0
         var end = arr.length
+        array_merge_sequence.current.push(arr)
         if (arr.length == 1) {
-            console.log(arr)
+            //console.log(arr)
             return [arr[start]]
         }
         var midpoint = Math.floor((end + start) / 2)
@@ -105,6 +155,7 @@ export function Mergesort({ elements }) {
                 break
             }
         }
+        array_sorted_merge_sequence.current.push(array_original)
         return array_original
     }
     const merge = (arr1, arr2) => {
@@ -115,7 +166,7 @@ export function Mergesort({ elements }) {
         var j = 0;
         var k = 0;
         //presort
-        console.log(arr1, arr2)
+        //console.log(arr1, arr2)
         while (true) {
             if (arr1[i] <= arr2[j]) {
                 merged_array.push(arr1[i])
@@ -145,6 +196,30 @@ export function Mergesort({ elements }) {
         x = (spacing_gaps) * (index_in_depth - 1) + spacing_gaps / 2
         y = depth * 100
         return [x, y]
+    }
+    const calculate_coordinate_upside_down = (width, index) => {
+        var x
+        var y
+        var depth = Math.floor(Math.log(index + 1) / Math.log(2))
+        var spacing_gaps = width / (Math.pow(2, depth + 1))
+        var index_in_depth = (Math.pow(2, depth + 1) - (index + 1))
+        x = (spacing_gaps) * (index_in_depth - 1) + spacing_gaps / 2
+        y = depth * (-100)
+        return [x, y]
+    }
+    const flip_heap_array_horizontally = (array) => {
+
+        var i
+        var flipped_array = []
+        for (i = 0; i < Math.floor(Math.log(array.length) / Math.log(2)); i++) {
+            var lower_end = Math.pow(2, i) - 1
+            var higher_end = Math.pow(2, i + 1) - 1
+            var sliced = array.slice(lower_end, higher_end)
+            var flipped = sliced.slice(sliced.length / 2).concat(sliced.slice(0, sliced.length / 2))
+
+            flipped_array.push(flipped)
+        }
+        return flipped_array
     }
     return (
         <div className='App'>
@@ -192,20 +267,43 @@ export function Mergesort({ elements }) {
                     }
                     }>Submit!</button>
             </div >
-            <div class="array-branch" style={{
-                position: 'absolute'
-            }}>
-                [
-                {array_unsorted_state.map((value, index) => {
-                    return <div class="array-cell"
-                        style={{
-                            //transform halfway left
-                            position: 'absolute',
-                            left: `${calculate_coordinate(500, index)[0]}px`,
-                            top: `${calculate_coordinate(500, index)[1]}px`
-                        }}>{value + input_bar_array[index]}</div>
-                })}
-                ]
+            <div class='animation-container'>
+                <div class='inner-animation-container'>
+                    <div class="array-branch" style={{
+                        position: 'absolute'
+                    }}>
+                        
+                        {array_unsorted_state.map((value, index) => {
+                            return <div class="array-cell"
+                                style={{
+                                    transformOrigin: 'center',
+                                    transform: 'translateX(-50%)',
+                                    //transform halfway left
+                                    position: 'absolute',
+                                    left: `${calculate_coordinate(1000, index)[0]}px`,
+                                    top: `${calculate_coordinate(1000, index)[1]}px`
+                                }}>[{`${value}`}]</div>
+                        })}
+                        
+                    </div>
+                    <div class="array-branch-merged" style={{
+                        position: 'absolute'
+                    }}>
+                        
+                        {array_sorted_state.map((value, index) => {
+                            return <div class="array-cell"
+                                style={{
+                                    transformOrigin: 'center',
+                                    transform: 'translateX(-50%)',
+                                    //transform halfway left
+                                    position: 'absolute',
+                                    left: `${calculate_coordinate_upside_down(1000, 6 - index)[0]}px`,
+                                    top: `${calculate_coordinate_upside_down(1000, 6 - index)[1] + 550}px`
+                                }}>[{`${value}`}]</div>
+                        })}
+                        
+                    </div>
+                </div>
             </div>
         </div >
     )

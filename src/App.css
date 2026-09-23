@@ -520,7 +520,15 @@ This section is for Arrays
   display: flex;
   flex-direction: row;
 }
-
+.animation-container{
+  width: 100vw;
+  height: 700px;
+  display: flex;
+  justify-content: center;
+}
+.inner-animation-container{
+  width: 500px;
+}
 /*
 This section contains the animations
 
