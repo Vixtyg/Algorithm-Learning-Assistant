@@ -12,7 +12,7 @@ import { update } from 'three/examples/jsm/libs/tween.module.js';
 
 //Add positon tracker // Keys // IDs // Class //Auto resize //Form submit
 
-
+const ANIMATION_SPEED = 500
 export function Mergesort({ elements }) {
     const number = elements
     const input_bar_array = []
@@ -102,7 +102,7 @@ export function Mergesort({ elements }) {
         var order_of_LR_traversal = []
         var ascending_array = []
         var i
-        for (i = length-1; i>=0; i--) {
+        for (i = length - 1; i >= 0; i--) {
             ascending_array.push(i)
         }
         recursive_LR_traversal(order_of_LR_traversal, ascending_array, 1)
@@ -220,10 +220,10 @@ export function Mergesort({ elements }) {
         y = depth * (-100)
         return [x, y]
     }
-    const create_descending_array = (length) =>{
-        var arr=[]
+    const create_descending_array = (length) => {
+        var arr = []
         var i
-        for (i=length-1;i>=0;i--){
+        for (i = length - 1; i >= 0; i--) {
             arr.push(i)
         }
         return arr
@@ -236,15 +236,15 @@ export function Mergesort({ elements }) {
         for (i = 0; i <= Math.floor(Math.log(array.length) / Math.log(2)); i++) {
             var lower_end = Math.pow(2, i) - 1
             var higher_end = Math.pow(2, i + 1) - 1
-            if ((array.length)<higher_end){
-                higher_end=array.length
+            if ((array.length) < higher_end) {
+                higher_end = array.length
             }
-            
+
             var sliced = array.slice(lower_end, higher_end)
             //var flipped = sliced.slice(sliced.length / 2).concat(sliced.slice(0, sliced.length / 2))
             var flipped = sliced.reverse()
-            
-            for (a=0;a<flipped.length;a++){
+
+            for (a = 0; a < flipped.length; a++) {
                 flipped_array.push(flipped[a])
             }
         }
@@ -252,25 +252,111 @@ export function Mergesort({ elements }) {
     }
     console.log()
     const trigger_animation = async () => {
-        await sleep(200)
+        await sleep(ANIMATION_SPEED / 2)
 
         var order_of_LR = order_of_LR_traversal(array_merge_sequence.current.length)
-        
+
         var order_of_LR2 = order_of_reversed_LR_traversal(array_sorted_merge_sequence_div.current.length).reverse()
         //console.log(order_of_LR_traversal(array_sorted_merge_sequence_div.current.length))
         var i
         for (i = 0; i < array_merge_sequence.current.length; i++) {
-            console.log("THING", )
+            console.log("THING",)
             await sleep(200)
-            array_merge_sequence_div.current[order_of_LR[i]].style.opacity=1
+            array_merge_sequence_div.current[order_of_LR[i]].style.opacity = 1
         }
         var a
+        var length_of_merged = array_sorted_merge_sequence_div.current.length
         for (a = 0; a < array_sorted_merge_sequence_div.current.length; a++) {
             await sleep(200)
-           // console.log([order_of_LR2[a]])
-            array_sorted_merge_sequence_div.current[order_of_LR2[a]].style.opacity=1
+            // console.log([order_of_LR2[a]])
+            array_sorted_merge_sequence_div.current[order_of_LR2[a]].style.opacity = 1
+            await sleep(ANIMATION_SPEED)
+            //We check if the child is the right child (Merge is triggered only after the)
+            //second child is merged
+            if ((a + 1) % 2 == 0) {
+                var parent = (length_of_merged + a) / 2
+                console.log(a, parent)
+                console.log(array_sorted_merge_sequence_div.current)
+                await trigger_merge_comparison(a, a - 1, parent)
+            }
+
             //array_sorted_merge_sequence_div.current[order_of_LR2[i]].style.opacity=1
         }
+    }
+    const trigger_merge_comparison = async (sibling1, sibling2, parent) => {
+        array_sorted_merge_sequence_div.current[parent].style.opacity = 1
+        array_sorted_merge_sequence_div.current[sibling1].style.opacity = 1
+
+        array_sorted_merge_sequence_div.current[sibling2].style.opacity = 1
+
+        var i
+        var a = 0
+        var length_sibling1 = array_sorted_merge_sequence.current[sibling1].length
+        var length_sibling2 = array_sorted_merge_sequence.current[sibling2].length
+        var length_parent = array_sorted_merge_sequence.current[parent].length
+
+        console.log(length_sibling1)
+        var j = 0
+        var k = 0
+        for (i = 0; i < length_sibling1; i++) {
+            array_sorted_merge_sequence_div.current[sibling1].querySelector(`.index-${i}`).style.opacity = 1
+            array_sorted_merge_sequence_div.current[sibling2].querySelector(`.index-${i}`).style.opacity = 1
+
+        }
+        for (i = 0; i < length_parent; i++) {
+
+            await sleep(ANIMATION_SPEED * 2)
+            array_sorted_merge_sequence_div.current[sibling1].querySelector(`.index-${a}`).style.opacity = 1
+            array_sorted_merge_sequence_div.current[sibling2].querySelector(`.index-${j}`).style.opacity = 1
+
+            array_sorted_merge_sequence_div.current[sibling1].querySelector(`.index-${a}`).style.background = "purple"
+            array_sorted_merge_sequence_div.current[sibling2].querySelector(`.index-${j}`).style.background = "purple"
+            var left = Math.round(array_sorted_merge_sequence.current[sibling2][j])
+            var right = Math.round(array_sorted_merge_sequence.current[sibling1][a])
+
+            console.log("LEFT, RIGHT", left)
+
+            console.log("LEFT, RIGHT", right > left)
+
+            await sleep(ANIMATION_SPEED * 2)
+            if (right > left
+            ) {
+                array_sorted_merge_sequence_div.current[parent].querySelector(`.index-${k}`).style.opacity = 1
+
+                k += 1
+                j += 1
+                if (array_sorted_merge_sequence.current[sibling2].length == j) {
+
+
+                    array_sorted_merge_sequence_div.current[sibling1].querySelector(`.index-${a}`).style.background = "none"
+
+                    await sleep(ANIMATION_SPEED * 2)
+                    break
+                }
+            } else {
+
+                array_sorted_merge_sequence_div.current[parent].querySelector(`.index-${k}`).style.opacity = 1
+
+                k += 1
+                a += 1
+                if (array_sorted_merge_sequence.current[sibling1].length == a) {
+
+                    array_sorted_merge_sequence_div.current[sibling2].querySelector(`.index-${j}`).style.background = "none"
+
+                    await sleep(ANIMATION_SPEED * 2)
+                    break
+                }
+                //add comparison to bottom
+            }
+            array_sorted_merge_sequence_div.current[sibling1].querySelector(`.index-${a}`).style.background = "none"
+            array_sorted_merge_sequence_div.current[sibling2].querySelector(`.index-${j}`).style.background = "none"
+
+        }
+
+        for (k = 0; k < length_parent; k++) {
+            array_sorted_merge_sequence_div.current[parent].querySelector(`.index-${k}`).style.opacity = 1
+        }
+
     }
 
     async function sleep(timeInMs) {
@@ -341,15 +427,25 @@ export function Mergesort({ elements }) {
                                 }
                             }}
                                 style={{
-                                    opacity:0,
-                                    transition: 'all 0.2s',
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    opacity: 0,
+                                    transition: `all ${ANIMATION_SPEED / 2000}s`,
                                     transformOrigin: 'center',
                                     transform: 'translateX(-50%)',
                                     //transform halfway left
                                     position: 'absolute',
                                     left: `${calculate_coordinate(1000, index)[0]}px`,
                                     top: `${calculate_coordinate(1000, index)[1]}px`
-                                }}>[{`${value}`}]</div>
+                                }}>
+                                [  {value.map((content, index) => {
+                                    if ((index + 1) < value.length) {
+                                        return <div>{`${content}`},</div>
+                                    } else {
+                                        return <div>{`${content}`}</div>
+                                    }
+                                })}]
+                            </div>
                         })}
 
                     </div>
@@ -358,23 +454,37 @@ export function Mergesort({ elements }) {
                     }}>
 
                         {array_sorted_state.map((value, index) => {
-                            return <div class="array-cell" ref={(ref)=>{
-                                  if (array_sorted_merge_sequence_div.current.includes(ref) == false
+                            return <div class="array-cell" ref={(ref) => {
+                                if (array_sorted_merge_sequence_div.current.includes(ref) == false
                                     && ref != null) {
                                     array_sorted_merge_sequence_div.current.push(ref)
                                 }
                             }}
                                 style={{
 
-                                    opacity:0,
-                                    transition: 'all 0.2s',
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    opacity: 0,
+                                    transition: `all ${ANIMATION_SPEED / 2000}s`,
                                     transformOrigin: 'center',
                                     transform: 'translateX(-50%)',
                                     //transform halfway left
                                     position: 'absolute',
                                     left: `${calculate_coordinate_upside_down(1000, 6 - index)[0]}px`,
                                     top: `${calculate_coordinate_upside_down(1000, 6 - index)[1] + 550}px`
-                                }}>[{`${value}`}]</div>
+                                }}> [  {value.map((content, index) => {
+                                    if ((index + 1) < value.length) {
+                                        return <div style={{
+                                            opacity: 0,
+                                            transition: `all ${ANIMATION_SPEED / 1000}s`
+                                        }} class={`index-${index}`}>{`${content}`},</div>
+                                    } else {
+                                        return <div style={{
+                                            opacity: 0,
+                                            transition: `all ${ANIMATION_SPEED / 1000}s`
+                                        }} class={`index-${index}`}>{`${content}`}</div>
+                                    }
+                                })}]</div>
                         })}
 
                     </div>
