@@ -509,7 +509,9 @@ This section is for Arrays
 }
 
 #cell-inputbar {
+  text-align: center;
   width: 5vw;
+  height: 5vw;
   background-color: var(--primary);
   border: 0;
   padding-left: 0.2em;
