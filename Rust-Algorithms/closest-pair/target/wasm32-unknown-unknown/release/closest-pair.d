@@ -1,0 +1,1 @@
+/home/vixtyg/Dokumente/Projects/Algorithm-Learning-Assistant/Rust-Algorithms/closest-pair/target/wasm32-unknown-unknown/release/closest-pair.wasm: /home/vixtyg/Dokumente/Projects/Algorithm-Learning-Assistant/Rust-Algorithms/closest-pair/src/main.rs

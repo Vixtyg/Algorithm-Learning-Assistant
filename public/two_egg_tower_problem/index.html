@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="body">
+        <h1 class="text" id="title-heading">
+            The two egg tower problem
+        </h1>
+        <div id="text-container">
+            <div class="text" id="h4-text1">
+                The core problem is the following:
+                <br><br>
+                You are in a house with n floors. You also have
+                two eggs. You want to find
+                the lowest floor, after which your eggs start to break.
+            </div>
+            <br><br>
+            <div class="text" id="h4-text2">
+                You can reuse your eggs as many times as you want.
+                However, after you drop them from a "deadly floor"
+                or higher, they will break. After that, they will NOT
+                be reusable!
+                <br><br>
+                If you break all the eggs, you have to restart
+            </div>
+            <div class="text" id="h4-text3">
+                <br><br>Your job is to...<br>
+            </div>
+            <ul>
+                <div class="text" id="h4-text4">
+                    <li>Develop an Algorithm for finding the deadly floor!</li>
+                </div>
+                <div class="text" id="h4-text5">
+                    <li>Describe the time complexity of your algorithm! (how many
+                        tests for n-floors)
+                    </li>
+                </div>
+            </ul>
+        </div>
+        <div id="simulation-container">
+            <div id="house-display">
+                <div id="house-navbar">
+                    <span class="text" id="drop-counter">Drops: </span>
+                    <span id="restart-icon"></span>
+                </div>
+                <div id="floor-container">
+                </div>
+            </div>
+            <div id="vertical-navbar">
+                <div class="icon-container">
+                    <div id="hint1"></div>
+                    <span id=hint-text>
+                        After dropping one egg, you have to iterate through
+                        each remaining floor. That means that you have a time
+                        complexity of O(m) of m remaining elements
+                    </span>
+                </div>
+                <div class="icon-container">
+                    <div id="hint1"></div>
+                    <span id=hint-text>
+                        You obviously have to skip some floors.
+                        What happens if you skip too many floors?
+                        Or if you dont skip enough?
+                        What is the relationship between big and small jumps?
+                    </span>
+                </div>
+                <div class="icon-container">
+                    <div id="hint1"></div>
+                    <span id=hint-text>
+                        Halving the floors all the time is not really effective.
+                        In the worst case, you will have a time complexity of O(n/2). There is a more efficient
+                        way!
+                    </span>
+
+                </div>
+                <div class="icon-container">
+                    <div id="hint1"></div>
+                    <span id=hint-text>
+                        Binary search will not help you here.
+                        The length of big jumps in a house with n floors remains constant
+                    </span>
+                </div>
+                <div class="icon-container-small">
+                    <div id="hint1"></div>
+                    <span id="hint-text-small">Try to divide the time complexity into the time complexity
+                        of big jumps (skipping many floors) and small jumps (going up one floor).
+                        For example, skipping every 10 floors is O(b/10). How many smalls steps
+                        will remain?</span>
+                </div>
+                <div class="icon-container-ready">
+                    <div id="ready"></div>
+                    <span id="hint-text"> Click on me if you are ready to be quizzed and see the solution!</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="bottom-half">
+        <form id="resize-floors">
+            <input placeholder="Custom amount of floors">
+            <button class="text" id="restart-button">Restart</button>
+
+        </form>
+        <div class="text" id="input-bar-error">Input bar error! Floors higher than 99999 are not allowed!</div>
+        <div id="result-div-container">
+            <div id="result-div" class="text">Result:</div>
+
+        </div>
+    </div>
+</body>
+<script src="script.js"></script>
+
+</html>

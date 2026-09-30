@@ -1,0 +1,1 @@
+/home/vixtyg/Dokumente/Projects/Algorithm-Learning-Assistant/Rust-Algorithms/closest-pair/target/debug/libclosest_pair.so: /home/vixtyg/Dokumente/Projects/Algorithm-Learning-Assistant/Rust-Algorithms/closest-pair/src/main.rs
